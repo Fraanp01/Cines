@@ -1,0 +1,5169 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "url": "https://www.moobycinemas.com/cartelera",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "setLang",
+              "value": "es"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -20,
+        920
+      ],
+      "id": "ab0ae3c6-45e8-4e73-ad2f-8854ff59e77e",
+      "name": "Mooby Cinemas"
+    },
+    {
+      "parameters": {
+        "url": "https://www.cinemamalda.com/",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -20,
+        1240
+      ],
+      "id": "522d9609-1dba-457f-a420-3ae8336e73f0",
+      "name": "Cinema Malda"
+    },
+    {
+      "parameters": {
+        "url": "https://www.phenomena-experience.com/programacion-peliculas/todas.html",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -20,
+        1520
+      ],
+      "id": "03465c9d-24f1-4505-b3a3-3ed1c70dc6e1",
+      "name": "Phenomena Experience"
+    },
+    {
+      "parameters": {
+        "extractionValues": {
+          "values": [
+            {
+              "key": "Peliculas",
+              "cssSelector": "main nav a",
+              "returnValue": "attribute",
+              "attribute": "href",
+              "returnArray": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "HTML Extract",
+      "type": "n8n-nodes-base.htmlExtract",
+      "position": [
+        260,
+        920
+      ],
+      "typeVersion": 1,
+      "id": "7849497b-c260-4d72-84f9-84df72183e63"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "Peliculas",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        460,
+        920
+      ],
+      "id": "a963f9c8-e85a-4fbc-b386-b182049b5d56",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b83a8296-3300-4dec-8f9f-f976d9f43ff8",
+              "name": "ID Cine",
+              "value": "=1",
+              "type": "number"
+            },
+            {
+              "id": "6ceb8b66-f65f-4a84-8526-b7a1ecf08b5d",
+              "name": "ID Pelicula",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "c6164539-8472-429f-a83f-0927634ab2ac",
+              "name": "Nombre Pelicula CAS",
+              "value": "={{ $json.Titulo }}",
+              "type": "string"
+            },
+            {
+              "id": "1012e859-c1ad-4f05-89bd-ac25231e2977",
+              "name": "Reparto CAS",
+              "value": "={{ $json.Datos.find(item => item.includes('Repartiment')).split(':')[1].trim() }}",
+              "type": "string"
+            },
+            {
+              "id": "6791778e-1f54-4810-99a3-b81e2f948444",
+              "name": "Año",
+              "value": "={{ $json.Datos[0].split(':')[1].trim() }}",
+              "type": "number"
+            },
+            {
+              "id": "9a4da4d1-0ce7-4f49-a481-4b2538efc3a4",
+              "name": "Dirección",
+              "value": "={{ $json.Datos.find(item => item.includes('Direcció')).split(':')[1].trim() }}",
+              "type": "string"
+            },
+            {
+              "id": "1c34cd15-5c9e-4a62-a284-49d83ecf65e6",
+              "name": "Duración",
+              "value": "={{ $json.Datos.find(item => item.includes('Durada')).split(':')[1].trim() }}",
+              "type": "string"
+            },
+            {
+              "id": "0514c018-8b05-4ea5-9097-d8e48b0a5604",
+              "name": "Clasificación",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "6f46f198-40b2-45ea-a868-8eb3fed2cba2",
+              "name": "Tipo",
+              "value": "={{ $json['Año'] >= 2025 ? 'Estreno' : 'Película' }}",
+              "type": "string"
+            },
+            {
+              "id": "4203505a-190a-4925-aea4-48f204eb05ca",
+              "name": "Fecha",
+              "value": "={{ $json.Datos[1].split(':')[1].trim() }}",
+              "type": "string"
+            },
+            {
+              "id": "af417495-89d2-41e0-91d5-d3d204f029f0",
+              "name": "Género CAS",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "266d8463-849b-4c9c-9ad8-9e7a1dedd7b2",
+              "name": "Idioma CAS",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "a77d8211-037e-42b1-960a-10f824e34edc",
+              "name": "País CAS",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "b43b2bc2-ec2b-4bc7-b6a9-909a6a8ea3a2",
+              "name": "Sinopsis CAS",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "f2f5e03c-5ae6-44c4-93b2-da3521a83036",
+              "name": "Nombre Película ENG",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "0f4c57db-1969-4f7d-bfd1-cef27db1a53a",
+              "name": "Fotograma",
+              "value": "=",
+              "type": "string"
+            },
+            {
+              "id": "150a1bad-a43d-4980-a9de-357fa04d8820",
+              "name": "Reparto CAT",
+              "value": "={{ $json.Datos.find(item => item.includes('Repartiment')).split(':')[1].trim() }}",
+              "type": "string"
+            },
+            {
+              "id": "a1e780c6-c6e0-43ea-9710-4c8f5884ab84",
+              "name": "Reparto ENG",
+              "value": "={{ $json.Datos.find(item => item.includes('Repartiment')).split(':')[1].trim() }}",
+              "type": "string"
+            },
+            {
+              "id": "ddaefa08-f42c-4ef9-b38d-92d9980ac939",
+              "name": "Cartelera",
+              "value": "={{ $json.Poster }}",
+              "type": "string"
+            },
+            {
+              "id": "87529dc5-1f00-4ba6-8c16-3880ca1162d9",
+              "name": "Género CAT",
+              "value": "={{ $json.Datos[5].split(':')[1].trim() }}",
+              "type": "string"
+            },
+            {
+              "id": "c20a0944-9341-497b-80a9-943cc91a63a5",
+              "name": "Género ENG",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "d9ee5e86-9ea7-4857-a26d-ff9ca65c7514",
+              "name": "Trailer",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "4f93d667-181e-4032-b51b-2b6116fbda47",
+              "name": "Sinopsis CAT",
+              "value": "={{ $json.Sinopsis[1].replaceAll('\\n','. ').replaceAll('·','').replaceAll('. .','..')}}",
+              "type": "string"
+            },
+            {
+              "id": "3310a137-8086-4ac1-aac6-938b86228633",
+              "name": "Sinopsis ENG",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "faf23e8d-8a7e-4784-bf48-ef8881544b72",
+              "name": "Imagen CAS",
+              "value": "Color",
+              "type": "string"
+            },
+            {
+              "id": "3db5a256-4371-44f8-b5b8-3b439ba3856f",
+              "name": "Idioma CAT",
+              "value": "={{ $json.Datos.find(item => item.includes('Idioma original')).split(':')[1].trim() }}",
+              "type": "string"
+            },
+            {
+              "id": "35c8ee5c-f687-43f9-a603-30869226cf64",
+              "name": "Idioma ENG",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "16e07198-6431-41cc-90a6-d6567db8ddd5",
+              "name": "País CAT",
+              "value": "={{ $json.Datos[2].split(':')[1].trim() }}",
+              "type": "string"
+            },
+            {
+              "id": "f91c77c4-efa4-46ef-864f-76702add1a4d",
+              "name": "País ENG",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "55ed54d7-3762-474e-aeac-20b18830746f",
+              "name": "Imagen CAT",
+              "value": "Color",
+              "type": "string"
+            },
+            {
+              "id": "8e5ed8ec-edca-486e-bd8a-42412276e4f8",
+              "name": "Imagen ENG",
+              "value": "Colour",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1640,
+        920
+      ],
+      "id": "3ba450df-51cc-44e4-8b32-aff9f14af2fe",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "numberInputs": 4
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        2840,
+        1220
+      ],
+      "id": "ca8ae48f-8385-4811-8fa9-5aafe407babb",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "extractionValues": {
+          "values": [
+            {
+              "key": "Peliculas",
+              "cssSelector": "a.movie",
+              "returnValue": "attribute",
+              "attribute": "href",
+              "returnArray": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "HTML Extract1",
+      "type": "n8n-nodes-base.htmlExtract",
+      "position": [
+        260,
+        1240
+      ],
+      "typeVersion": 1,
+      "id": "abff4304-26c4-4bd1-8540-32dd728433fa"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "Peliculas",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        700,
+        1240
+      ],
+      "id": "1a605ff5-c3a3-4f68-8c24-1757adcfd0f1",
+      "name": "Split Out1"
+    },
+    {
+      "parameters": {
+        "extractionValues": {
+          "values": [
+            {
+              "key": "Peliculas",
+              "cssSelector": "div.event-titulo > a",
+              "returnValue": "attribute",
+              "attribute": "href",
+              "returnArray": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "HTML Extract2",
+      "type": "n8n-nodes-base.htmlExtract",
+      "position": [
+        260,
+        1520
+      ],
+      "typeVersion": 1,
+      "id": "38fae4c4-e029-4139-809b-37462080e544"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "Peliculas",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        460,
+        1520
+      ],
+      "id": "8b2b4935-42d9-442e-8f09-251420b7c89a",
+      "name": "Split Out2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "321beee9-3545-4c0e-a1dc-7f1ac2ed813d",
+              "name": "ID Cine",
+              "value": 2,
+              "type": "number"
+            },
+            {
+              "id": "32cb8ca4-34c4-4edc-9926-bbcd23b54575",
+              "name": "ID Pelicula",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "92781ded-1250-4675-baec-eee4ba1fb31d",
+              "name": "Nombre Pelicula CAS",
+              "value": "={{ $json.Titulo.split('(')[0] }}",
+              "type": "string"
+            },
+            {
+              "id": "faf38faa-e00d-4e53-84d6-adda080df36b",
+              "name": "Reparto CAS",
+              "value": "={{$json.Datos[0].split('/')[3].split(':')[1].trim()}}",
+              "type": "string"
+            },
+            {
+              "id": "136219d8-4570-4b31-8c49-74d0695daef8",
+              "name": "Año",
+              "value": "={{ $json.Datos[0].split('/')[1].split(/[:\\,]/)[1].trim() }}",
+              "type": "number"
+            },
+            {
+              "id": "c0c4223d-19b0-4a8b-9acd-59832bd57027",
+              "name": "Dirección",
+              "value": "={{ $json.Datos[0].split('/')[2].split(':')[1].trim() }}",
+              "type": "string"
+            },
+            {
+              "id": "cd221c68-851b-455f-8837-ea0156a8dbbd",
+              "name": "Duración",
+              "value": "={{ $json.Datos[0].split('/').some(entry => entry.includes('Intérpretes') || entry.includes('Intervenciones de') || entry.includes('Intervienen')) ? $json.Datos[0].split('/')[5].trim() : $json.Datos[0].split('/')[4].trim() }}",
+              "type": "string"
+            },
+            {
+              "id": "5e25fd1d-cf53-4a4e-9a53-bdebd156a4c5",
+              "name": "Clasificación",
+              "value": "={{ $json.Datos[0].split('/').some(entry => entry.includes('Intérpretes') || entry.includes('Intervenciones de') || entry.includes('Intervienen')) ? $json.Datos[0].split('/')[7].split(' y distintivo')[0].trim() : $json.Datos[0].split('/')[6].split(' y distintivo')[0].trim() }}",
+              "type": "string"
+            },
+            {
+              "id": "19e2c9ff-4fad-4605-b6ed-9bf191a7da9c",
+              "name": "Tipo",
+              "value": "={{ $json['Año'] >= 2025 ? 'Estreno' : 'Película' }}",
+              "type": "string"
+            },
+            {
+              "id": "ae8553c8-a6ba-4896-813c-479069aa8fb6",
+              "name": "Fecha",
+              "value": "####",
+              "type": "string"
+            },
+            {
+              "id": "3c01754f-a338-4a58-9542-50cc0a5f4ba2",
+              "name": "Género CAS",
+              "value": "={{ $json.Datos[0].split('/').some(entry => entry.includes('Intérpretes') || entry.includes('Intervenciones de') || entry.includes('Intervienen')) ? $json.Datos[0].split('/')[4].trim() : $json.Datos[0].split('/')[3].trim() }}",
+              "type": "string"
+            },
+            {
+              "id": "8fea8562-4b7f-4374-acee-6d901c24b1ab",
+              "name": "Idioma CAS",
+              "value": "={{ $json.Datos[0].split('/').some(entry => entry.includes('Intérpretes') || entry.includes('Intervenciones de') || entry.includes('Intervienen')) ? $json.Datos[0].split('/')[6].trim() : $json.Datos[0].split('/')[5].trim() }}",
+              "type": "string"
+            },
+            {
+              "id": "f639932e-691e-4c3c-a1db-ab230e54cd6e",
+              "name": "País CAS",
+              "value": "={{ $json.Datos[0].split('/')[1].split(/[:\\,]/)[0].trim() }}",
+              "type": "string"
+            },
+            {
+              "id": "4b8a5778-c7b9-4c64-be2a-2527188f3e1c",
+              "name": "Sinopsis CAS",
+              "value": "={{ $json.Datos[1].replace('Sinopsis:','').trim() }}",
+              "type": "string"
+            },
+            {
+              "id": "1e21b454-c7e3-4433-aa27-920e4fffaea8",
+              "name": "Nombre Película ENG",
+              "value": "={{$json.Datos[0].split('/')[0].replace('»', '').replace('«','').trim()}}",
+              "type": "string"
+            },
+            {
+              "id": "9610c84b-4a51-47e3-8d2b-90a340012a11",
+              "name": "Fotograma",
+              "value": "=",
+              "type": "string"
+            },
+            {
+              "id": "6a95e1bc-0a02-4235-a2be-15fadb2d080f",
+              "name": "Reparto CAT",
+              "value": "={{$json.Datos[0].split('/')[3].split(':')[1].trim()}}",
+              "type": "string"
+            },
+            {
+              "id": "a2212737-2dbe-40bc-a373-4c3393ccf787",
+              "name": "Reparto ENG",
+              "value": "={{$json.Datos[0].split('/')[3].split(':')[1].trim()}}",
+              "type": "string"
+            },
+            {
+              "id": "22620201-81bd-4ced-bf73-d7dc53d04b55",
+              "name": "Cartelera",
+              "value": "={{ $json.Poster }}",
+              "type": "string"
+            },
+            {
+              "id": "94881cac-fb35-459d-bd19-a00dd4960cce",
+              "name": "Género CAT",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "2f9f914d-4569-4fe4-8dfb-60b1f72c19e1",
+              "name": "Género ENG",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "84839f44-6a9e-4043-aca2-2d1818db2668",
+              "name": "Trailer",
+              "value": "={{ $json.Trailer }}",
+              "type": "string"
+            },
+            {
+              "id": "d192463f-2987-46f6-a3a4-049723e2f1ee",
+              "name": "Sinopsis CAT",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "9d3a623c-0591-46ed-842c-66c9f3f6d486",
+              "name": "Sinopsis ENG",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "549a22bc-d5b3-4455-820f-67f2917f0233",
+              "name": "Imagen CAS",
+              "value": "Color",
+              "type": "string"
+            },
+            {
+              "id": "56c33424-0878-47e5-a35f-448275782f2d",
+              "name": "Idioma CAT",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "b38967c9-2537-405d-8e07-6994a40808a4",
+              "name": "Idioma ENG",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "2119c3a6-3088-4e07-b1db-747ff0b72c2b",
+              "name": "País CAT",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "bd1a853d-1dff-4c7c-9d83-8d9b26839194",
+              "name": "País ENG",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "d4486a73-8770-4818-b77a-431a0adaed3a",
+              "name": "Imagen CAT",
+              "value": "Color",
+              "type": "string"
+            },
+            {
+              "id": "2d4be671-9507-4b91-8fd8-299a4b3ab645",
+              "name": "Imagen ENG",
+              "value": "Colour",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1640,
+        1240
+      ],
+      "id": "049b35fc-8773-4511-a7a8-50e11c6f336b",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                5
+              ],
+              "triggerAtHour": 9
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -300,
+        1240
+      ],
+      "id": "f2867473-b9ed-4b56-a146-a66ef1d3af27",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4d029203-9a5f-47e4-ac47-0d5fd84f43f7",
+              "name": "ID Cine",
+              "value": 3,
+              "type": "number"
+            },
+            {
+              "id": "5ba39458-f651-47e8-91b0-72b385986ef7",
+              "name": "ID Pelicula",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "e1c10463-1487-4ac0-9e50-7072ddb5ad68",
+              "name": "Nombre Pelicula CAS",
+              "value": "={{ $json.Titulo.split(/[(<]/)[0].replaceAll('&amp;','&').trim() }}",
+              "type": "string"
+            },
+            {
+              "id": "543228af-acac-41bb-8b9d-9a9827dce09c",
+              "name": "Reparto CAS",
+              "value": "={{ $json.Reparto.replace('Int.','') }}",
+              "type": "string"
+            },
+            {
+              "id": "3fc493bf-8fd0-4ae7-94a9-1536d7952214",
+              "name": "Año",
+              "value": "={{ $json.Datos.split('·')[0].split(',').last().trim().isNumeric() ? $json.Datos.split('·')[0].split(',').last().trim() : 0 }}",
+              "type": "number"
+            },
+            {
+              "id": "0ad40229-2ee2-4f13-9f65-33eba5758bc2",
+              "name": "Dirección",
+              "value": "={{ $json.Datos.split('·')[0].split(/, (?:1|2)/)[0].replace('Dir.','') }}",
+              "type": "string"
+            },
+            {
+              "id": "940a0b95-e4e8-4e4c-b3d8-42c59aa151b7",
+              "name": "Duración",
+              "value": "={{ $json.Datos.split('·')[2].trim().replace(\"'\",\" min\") }}",
+              "type": "string"
+            },
+            {
+              "id": "03360bef-659d-4495-9b80-85f11f8ecb37",
+              "name": "Clasificación",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "b4f189db-de64-4408-b90a-6a9b1c37eb91",
+              "name": "Tipo",
+              "value": "={{ $json['Año'] >= 2025 ? 'Estreno' : 'Película' }}",
+              "type": "string"
+            },
+            {
+              "id": "b799d688-40f1-4a33-af5b-5d7cba573e44",
+              "name": "Fecha",
+              "value": "####",
+              "type": "string"
+            },
+            {
+              "id": "14bcbdb8-e4a5-487a-85d7-45e3ccb6ddb3",
+              "name": "Género CAS",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "9a535434-0c41-4909-9c24-1aae0525765c",
+              "name": "Idioma CAS",
+              "value": "={{ $json.Datos.split('·')[4].trim().startsWith('V') ? $json.Datos.split('·')[4].trim() : $json.Datos.split('·')[5].trim()  }}",
+              "type": "string"
+            },
+            {
+              "id": "0d5fc970-960e-4337-9a80-24dc78cc64b2",
+              "name": "País CAS",
+              "value": "={{ $json.Datos.split('·')[1].trim() }}",
+              "type": "string"
+            },
+            {
+              "id": "f3a5ba39-4ea9-483c-a9ac-e4135d6b52d1",
+              "name": "Sinopsis CAS",
+              "value": "={{ $json.Sinopsis }}",
+              "type": "string"
+            },
+            {
+              "id": "7fd85551-be29-4e4e-87bf-1c685e434d14",
+              "name": "Nombre Película ENG",
+              "value": "={{ $json.Titulo2 }}",
+              "type": "string"
+            },
+            {
+              "id": "c36c5a17-14eb-48c2-9bd9-f15830641388",
+              "name": "Fotograma",
+              "value": "=https://www.phenomena-experience.com/{{ $json.Poster }}",
+              "type": "string"
+            },
+            {
+              "id": "502b980c-e167-4c4f-bb41-99e79bcb8b63",
+              "name": "Reparto CAT",
+              "value": "={{ $json.Reparto.replace('Int.','') }}",
+              "type": "string"
+            },
+            {
+              "id": "20baf885-af39-4382-97a3-5598939df3f9",
+              "name": "Reparto ENG",
+              "value": "={{ $json.Reparto.replace('Int.','') }}",
+              "type": "string"
+            },
+            {
+              "id": "6382a041-fc62-4796-b5d9-7428abea1df2",
+              "name": "Cartelera",
+              "value": "=https://www.phenomena-experience.com/{{ $json.Poster }}",
+              "type": "string"
+            },
+            {
+              "id": "9f4621f7-e916-4777-89bb-5bf13767c292",
+              "name": "Género CAT",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "7b4215cb-a13f-42b4-8143-1a46ade6530f",
+              "name": "Género ENG",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "bea1ae2b-31f4-4f41-8904-c13ba7fbb55d",
+              "name": "Trailer",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "994c3d42-c71d-4106-902e-085f21a78ed8",
+              "name": "Sinopsis CAT",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "a804c21d-9a4c-4efc-9be7-e260b3877dd9",
+              "name": "Sinopsis ENG",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "6928ff49-b5aa-4981-b786-ba0dc17ee806",
+              "name": "Imagen CAS",
+              "value": "Color",
+              "type": "string"
+            },
+            {
+              "id": "58862633-c5d0-4a63-9cf6-6ca69b5d23a2",
+              "name": "Idioma CAT",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "81521271-f785-42aa-91ed-d38f9c8c690f",
+              "name": "Idioma ENG",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "e5df1b4d-7b78-4442-a899-634acd52b412",
+              "name": "País CAT",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "6b7452a3-7392-4778-9bd8-1851beafbe89",
+              "name": "Pais ENG",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "d64779fa-8cba-4a50-b4d9-1bf8478d1c2c",
+              "name": "Imagen CAT",
+              "value": "Color",
+              "type": "string"
+            },
+            {
+              "id": "5822077b-6f56-494c-bdd7-dee2d8718705",
+              "name": "Imagen ENG",
+              "value": "Colour",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1640,
+        1520
+      ],
+      "id": "08bb7806-5ea0-49c6-8f67-b964b8e22add",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "sortFieldsUi": {
+          "sortField": [
+            {
+              "fieldName": "Nombre Pelicula CAS"
+            }
+          ]
+        },
+        "options": {
+          "disableDotNotation": true
+        }
+      },
+      "type": "n8n-nodes-base.sort",
+      "typeVersion": 1,
+      "position": [
+        3140,
+        1220
+      ],
+      "id": "56694df7-7f36-4066-9010-5017b9685c91",
+      "name": "Sort"
+    },
+    {
+      "parameters": {
+        "url": "=https://www.moobycinemas.com{{$json.Peliculas}}",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "setLang",
+              "value": "es"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1160,
+        920
+      ],
+      "id": "2c9a1550-36cf-4671-91e8-7c9eeffaa53e",
+      "name": "Mooby Cinemas Peliculas"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "dee1f996-48f5-484e-9bed-f58240b87b78",
+              "leftValue": "={{ $json.Peliculas }}",
+              "rightValue": "precios-cine-malda-barcelona-preus",
+              "operator": {
+                "type": "string",
+                "operation": "notContains"
+              }
+            },
+            {
+              "id": "43d631a1-6518-4b1d-9880-81136048a5a7",
+              "leftValue": "={{ $json.Peliculas }}",
+              "rightValue": "cartelera-dia-dia",
+              "operator": {
+                "type": "string",
+                "operation": "notContains"
+              }
+            },
+            {
+              "id": "61e30095-8874-495d-a3eb-d57b666f7740",
+              "leftValue": "={{ $json.Peliculas }}",
+              "rightValue": "sesionteta",
+              "operator": {
+                "type": "string",
+                "operation": "notContains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        920,
+        1240
+      ],
+      "id": "1ffed0b5-daf8-4451-a9df-0faab7045e9d",
+      "name": "Filtro href Peliculas"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "35e1977d-8c9d-4554-9cf8-2afb43b919c6",
+              "leftValue": "={{ $json.Peliculas }}",
+              "rightValue": "/ciclo/",
+              "operator": {
+                "type": "string",
+                "operation": "notContains"
+              }
+            },
+            {
+              "id": "1eadb5ad-7efe-4892-9db7-e84b9b1f3add",
+              "leftValue": "={{ $json.Peliculas }}",
+              "rightValue": "programa-doble-sorpresa-club-phenomena",
+              "operator": {
+                "type": "string",
+                "operation": "notContains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        700,
+        1520
+      ],
+      "id": "785ca060-d898-4f08-adbe-d689c0996c4c",
+      "name": "Filtro href peliculas"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.Peliculas }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1160,
+        1240
+      ],
+      "id": "f68f86a3-db81-4a10-880a-4b9359a1846a",
+      "name": "Cinema Malda Peliculas"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.Peliculas }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1160,
+        1520
+      ],
+      "id": "d6c2d3a9-3b36-4031-9280-15762bebac4c",
+      "name": "Phenomena Experience Peliculas"
+    },
+    {
+      "parameters": {
+        "extractionValues": {
+          "values": [
+            {
+              "key": "Titulo",
+              "cssSelector": "h1"
+            },
+            {
+              "key": "Datos",
+              "cssSelector": "table > tbody > tr",
+              "returnArray": true
+            },
+            {
+              "key": "Poster",
+              "cssSelector": "body > main > article > div.details > div > figure > picture > img",
+              "returnValue": "attribute",
+              "attribute": "src"
+            },
+            {
+              "key": "Sinopsis",
+              "cssSelector": "div.synopsis > div",
+              "returnArray": true
+            },
+            {
+              "key": "Horario",
+              "cssSelector": "body > main > section > div > div > div > div",
+              "returnArray": true
+            }
+          ]
+        },
+        "options": {
+          "trimValues": true
+        }
+      },
+      "name": "Extraer datos Mooby Cinemas",
+      "type": "n8n-nodes-base.htmlExtract",
+      "position": [
+        1400,
+        920
+      ],
+      "typeVersion": 1,
+      "id": "64c59ecc-0243-4ded-ac14-d91ad8ad735f"
+    },
+    {
+      "parameters": {
+        "extractionValues": {
+          "values": [
+            {
+              "key": "Titulo",
+              "cssSelector": "div.titulo",
+              "returnValue": "html"
+            },
+            {
+              "key": "Reparto",
+              "cssSelector": "div.datos1"
+            },
+            {
+              "key": "Datos",
+              "cssSelector": "div.datos2"
+            },
+            {
+              "key": "Sinopsis",
+              "cssSelector": "div.datos3"
+            },
+            {
+              "key": "Poster",
+              "cssSelector": "img.ficha-img",
+              "returnValue": "attribute",
+              "attribute": "src"
+            },
+            {
+              "key": "Fotograma",
+              "cssSelector": "img.videoin",
+              "returnValue": "attribute",
+              "attribute": "src"
+            },
+            {
+              "key": "Titulo2",
+              "cssSelector": "div.titulo span"
+            },
+            {
+              "key": "Horario",
+              "cssSelector": "div.row.row-pases",
+              "returnArray": true
+            },
+            {
+              "key": "test",
+              "cssSelector": "body > main > section:nth-child(6) > div > div > div > nav > button",
+              "returnValue": "html"
+            }
+          ]
+        },
+        "options": {
+          "trimValues": true
+        }
+      },
+      "name": "Extraer datos Phenomena",
+      "type": "n8n-nodes-base.htmlExtract",
+      "position": [
+        1400,
+        1520
+      ],
+      "typeVersion": 1,
+      "id": "9c54767c-2a54-4455-80d5-064ff7d0ad51"
+    },
+    {
+      "parameters": {
+        "content": "## Cartelera",
+        "height": 1660,
+        "width": 2560
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -180,
+        140
+      ],
+      "typeVersion": 1,
+      "id": "d3f81114-393a-4781-925f-b978acd6fd33",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        3480,
+        1220
+      ],
+      "id": "ca8f4d86-2188-4179-9d15-aefab38a3b0e",
+      "name": "Aggregate1"
+    },
+    {
+      "parameters": {
+        "jsCode": "\nfunction eliminarDuplicadosYMantenerMasLargo(array) {\n\t// Verificar si el array está vacío\n\tif (!array || array.length === 0) return [];\n\n\t// Agrupar objetos por el campo \"Nombre Pelicula CAS\"\n\tconst agrupadosPorNombre = array.reduce((acumulador, actual) => {\n\t\t// Asegurar que el objeto tiene la propiedad requerida\n\t\tconst clave = actual[\"Nombre Pelicula CAS\"];\n\t\tif (clave === undefined) return acumulador;\n\t\t\n\t\tif (!acumulador[clave]) {\n\t\t\tacumulador[clave] = [];\n\t\t}\n\t\tacumulador[clave].push(actual);\n\t\treturn acumulador;\n\t}, {});\n\n\t// Para cada grupo, encontrar el objeto con la representación más larga\n\tconst resultado = Object.values(agrupadosPorNombre).map(grupo => {\n\t\t// Ordenar por longitud de la representación JSON (descendente) y tomar el primero\n\t\treturn grupo.sort((a, b) => \n\t\t\tJSON.stringify(b).length - JSON.stringify(a).length\n\t\t)[0];\n\t});\n\n\treturn resultado;\n}\n\nreturn eliminarDuplicadosYMantenerMasLargo($input.first().json.data)"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3700,
+        1220
+      ],
+      "id": "fadac450-4b5c-4f49-a0be-73d7b0942581",
+      "name": "Code",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "566c22b2-2cd4-4961-8632-672bfe71f23c",
+              "name": "NOMBRE PELICULA",
+              "value": "={{ $json.Titulo.split('(')[0] }}",
+              "type": "string"
+            },
+            {
+              "id": "50570457-002c-41db-956e-3c701368455a",
+              "name": "ID CINE",
+              "value": 68,
+              "type": "number"
+            },
+            {
+              "id": "ca94315e-e976-4707-ab73-c473670f7f8b",
+              "name": "HORARIO CAS",
+              "value": "={{ $json.Horario.filter(item => item !== '' && /\\d/.test(item)).map(item => item.split('h')[0].split(' ').filter((_, i) => i !== 1).filter(item => item !== '').join(', ')).join('; ').replaceAll('Mx','X').replaceAll(/[\"[\\]\\\\a-z]/g, '') }}",
+              "type": "string"
+            },
+            {
+              "id": "300f551e-4db8-4e53-b93e-b2752505fe46",
+              "name": "HORARIO CAT",
+              "value": "={{ $json.Horario.filter(item => item !== '' && /\\d/.test(item)).map(item => item.split('h')[0].split(' ').filter((_, i) => i !== 1).filter(item => item !== '').join(', ')).join('; ').replaceAll('Mx','X').replaceAll(/[\"[\\]\\\\a-z]/g, '').replaceSpecialChars().replaceAll(/[LMXJVSD]/g, d=>({L:\"dl\",M:\"dt\",X:\"dc\",J:\"dj\",V:\"dv\",S:\"ds\",D:\"dg\"}[d]))}}",
+              "type": "string"
+            },
+            {
+              "id": "bd6a60a0-cf5c-483b-aaf4-2413a161b77e",
+              "name": "HORARIO EN",
+              "value": "={{ $json.Horario.filter(item => item !== '' && /\\d/.test(item)).map(item => item.split('h')[0].split(' ').filter((_, i) => i !== 1).filter(item => item !== '').join(', ')).join('; ').replaceAll('Mx','X').replaceAll(/[\"[\\]\\\\a-z]/g, '').replaceAll(/[LMXJVSD]/g, d=>({L:\"Mon\",M:\"Tue\",X:\"Wed\",J:\"Thur\",V:\"Fri\",S:\"Sat\",D:\"Sun\"}[d])) }}",
+              "type": "string"
+            },
+            {
+              "id": "62439df6-5eeb-43b3-b64f-0b382b09b5ea",
+              "name": "VERSION CAS",
+              "value": "={{ $json.Titulo.split('(')[1].replaceAll(')','') }}",
+              "type": "string"
+            },
+            {
+              "id": "36235e71-b28e-4273-8745-5c5f0c520ce3",
+              "name": "VERSION CAT",
+              "value": "={{ $json.Titulo.split('(')[1].replaceAll(')','') }}",
+              "type": "string"
+            },
+            {
+              "id": "e68e254a-98be-4ba7-8499-592299af78d9",
+              "name": "VERSION ENG",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1400,
+        1820
+      ],
+      "id": "743d38df-fd72-4375-bbad-93e1481c3def",
+      "name": "Edit Fields3"
+    },
+    {
+      "parameters": {
+        "content": "## Pases",
+        "height": 1340,
+        "width": 2560,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -180,
+        1800
+      ],
+      "id": "cb55dc3e-b9e4-476e-92b3-94de1872a421",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "566c22b2-2cd4-4961-8632-672bfe71f23c",
+              "name": "NOMBRE PELICULA",
+              "value": "={{ $json.Titulo.split(/[(<]/)[0].replaceAll('&amp;','&').trim() }}",
+              "type": "string"
+            },
+            {
+              "id": "50570457-002c-41db-956e-3c701368455a",
+              "name": "ID CINE",
+              "value": 1201,
+              "type": "number"
+            },
+            {
+              "id": "ca94315e-e976-4707-ab73-c473670f7f8b",
+              "name": "HORARIO CAS",
+              "value": "={{ $json.Horario.map(item => item.split(/,|\\n|h/).map(item => item.trim()).filter((_, i) => i == 0 || i == 2).join(', ')).join('; ').replaceSpecialChars().replaceAll('Miercoles','X').replaceAll(/[\"[\\]\\\\a-z]/g, '') }}",
+              "type": "string"
+            },
+            {
+              "id": "cf92fa2a-b9d1-4e75-82ea-6ade5f5f60c2",
+              "name": "HORARIO CAT",
+              "value": "={{ $json.Horario.map(item => item.split(/,|\\n|h/).map(item => item.trim()).filter((_, i) => i == 0 || i == 2).join(', ')).join('; ').replaceSpecialChars().replaceAll('Miercoles','X').replaceAll(/[\"[\\]\\\\a-z]/g, '').replaceAll(/[LMXJVSD]/g, d=>({L:\"dl\",M:\"dt\",X:\"dc\",J:\"dj\",V:\"dv\",S:\"ds\",D:\"dg\"}[d])) }}",
+              "type": "string"
+            },
+            {
+              "id": "bd6a60a0-cf5c-483b-aaf4-2413a161b77e",
+              "name": "HORARIO EN",
+              "value": "={{ $json.Horario.map(item => item.split(/,|\\n|h/).map(item => item.trim()).filter((_, i) => i == 0 || i == 2).join(', ')).join('; ').replaceSpecialChars().replaceAll('Miercoles','X').replaceAll(/[\"[\\]\\\\a-z]/g, '').replaceAll(/[LMXJVSD]/g, d=>({L:\"Mon\",M:\"Tue\",X:\"Wed\",J:\"Thur\",V:\"Fri\",S:\"Sat\",D:\"Sun\"}[d])) }}",
+              "type": "string"
+            },
+            {
+              "id": "62439df6-5eeb-43b3-b64f-0b382b09b5ea",
+              "name": "VERSION CAS",
+              "value": "={{ $json.Datos.split('·')[4].trim() !== '4K' ? $json.Datos.split('·')[4].trim() : $json.Datos.split('·')[5].trim() }}",
+              "type": "string"
+            },
+            {
+              "id": "46861acf-7de1-4323-a09a-f55285dec770",
+              "name": "VERSION CAT",
+              "value": "={{ $json.Datos.split('·')[4].trim() !== '4K' ? $json.Datos.split('·')[4].trim() : $json.Datos.split('·')[5].trim() }}",
+              "type": "string"
+            },
+            {
+              "id": "5e56a5af-adea-429a-ab35-be7ede1a4ccc",
+              "name": "VERSION ENG",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1400,
+        1980
+      ],
+      "id": "2c2f7bbc-7599-47fd-a951-78dc72d866fe",
+      "name": "Edit Fields5"
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "binaryPropertyName": "Pelis_icub",
+        "options": {
+          "fileName": "={{ $('Schedule Trigger').item.json.timestamp.split('T')[0].replaceAll('-','') }}_Pelis_icub.xlsx",
+          "sheetName": "Pelis_icub"
+        }
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        4620,
+        1220
+      ],
+      "id": "960a9a2b-4178-4c0f-b8e4-36ae58335c61",
+      "name": "Convert to File"
+    },
+    {
+      "parameters": {
+        "numberInputs": 8
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        2280,
+        2180
+      ],
+      "id": "3432b519-6705-4ef2-b35b-37102e6aa998",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "37176db1-f62a-4205-806b-514864947749",
+              "name": "NOMBRE PELICULA",
+              "value": "={{ $json['NOMBRE PELICULA'].trim() }}",
+              "type": "string"
+            },
+            {
+              "id": "595d6e65-2621-46f0-bc87-707e29504c49",
+              "name": "ID CINE",
+              "value": "={{ $json['ID CINE'] }}",
+              "type": "string"
+            },
+            {
+              "id": "fca85a2b-7847-49cc-82f7-920fc44b34f5",
+              "name": "HORARIO CAS",
+              "value": "={{$json['ID CINE'] == 68 || $json['ID CINE'] == 1201 ? $json['HORARIO CAS'] : ($json['HORARIO CAS'].replaceAll(', ,', '').trim().length > 7 ? $json['HORARIO CAS'] : \"\");}}",
+              "type": "string"
+            },
+            {
+              "id": "ffba3f28-578f-47c0-9e78-b67c00a370cc",
+              "name": "HORARIO CAT",
+              "value": "={{$json['ID CINE'] == 68 || $json['ID CINE'] == 1201 ? $json['HORARIO CAT'] : ($json['HORARIO CAT'].replaceAll(', ,', '').trim().length > 7 ? $json['HORARIO CAT'] : \"\");}}",
+              "type": "string"
+            },
+            {
+              "id": "a0a08e68-0f51-48b7-a00b-244efbb103c5",
+              "name": "HORARIO EN",
+              "value": "={{$json['ID CINE'] == 68 || $json['ID CINE'] == 1201 ? $json['HORARIO EN'] : ($json['HORARIO EN'].replaceAll(', ,', '').trim().length > 7 ? $json['HORARIO EN'] : \"\");}}",
+              "type": "string"
+            },
+            {
+              "id": "6056c15e-06fe-47a3-9f20-3b31c6f7bdcc",
+              "name": "VERSION CAS",
+              "value": "={{ $json['VERSION CAS'] }}",
+              "type": "string"
+            },
+            {
+              "id": "4617c1e6-25d6-4720-a165-a572c4fc3617",
+              "name": "VERSION CAT",
+              "value": "={{ $json['VERSION CAT'] }}",
+              "type": "string"
+            },
+            {
+              "id": "9b8f5f2a-d474-41d0-97eb-26362f37fe99",
+              "name": "VERSION ENG",
+              "value": "={{ $json['VERSION ENG'] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3460,
+        2280
+      ],
+      "id": "106be4b1-e2dd-4767-9fdb-c258479048bd",
+      "name": "Edit Fields6"
+    },
+    {
+      "parameters": {
+        "sortFieldsUi": {
+          "sortField": [
+            {
+              "fieldName": "NOMBRE PELICULA"
+            },
+            {
+              "fieldName": "ID CINE"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.sort",
+      "typeVersion": 1,
+      "position": [
+        2940,
+        2280
+      ],
+      "id": "cbbe127b-c7b0-4db0-8928-1ade24ec0df1",
+      "name": "Sort1"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "advanced": true,
+        "mergeByFields": {
+          "values": [
+            {
+              "field1": "Nombre Pelicula CAS",
+              "field2": "NOMBRE PELICULA"
+            }
+          ]
+        },
+        "joinMode": "enrichInput2",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        3980,
+        2260
+      ],
+      "id": "8acb7af1-70cc-45d4-8d40-617ca8981eae",
+      "name": "Merge2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0756cf35-1b44-493b-9c70-af3c4467fe46",
+              "name": "ID",
+              "value": "={{ $itemIndex + 1 }}",
+              "type": "string"
+            },
+            {
+              "id": "29573d06-c424-43f4-ab9f-f1c40a2f2748",
+              "name": "ID PELI",
+              "value": "={{ $json['ID Pelicula'] }}",
+              "type": "string"
+            },
+            {
+              "id": "99c30b43-9847-479d-8e6e-6dbfa21ea17a",
+              "name": "NOMBRE PELICULA",
+              "value": "={{ $json['NOMBRE PELICULA'] }}",
+              "type": "string"
+            },
+            {
+              "id": "4e86d1e7-0bfd-4d71-a7f6-1c5a75660a58",
+              "name": "ID CINE",
+              "value": "={{ $json['ID CINE'] }}",
+              "type": "string"
+            },
+            {
+              "id": "aba80cdb-5ac3-467f-b836-ae504ab6c818",
+              "name": "HORARIO CAS",
+              "value": "={{ $json['HORARIO CAS'] }}",
+              "type": "string"
+            },
+            {
+              "id": "6cebd81f-d149-42dc-8b49-ba8c1195ac2a",
+              "name": "HORARIO CAT",
+              "value": "={{ $json['HORARIO CAT'] }}",
+              "type": "string"
+            },
+            {
+              "id": "cda04d95-1441-43b2-8ed3-1fca7a156225",
+              "name": "HORARIO EN",
+              "value": "={{ $json['HORARIO EN'] }}",
+              "type": "string"
+            },
+            {
+              "id": "dab277ef-03c6-48c7-a905-3786827a18e9",
+              "name": "VERSION CAS",
+              "value": "={{ $json['VERSION CAS'] }}",
+              "type": "string"
+            },
+            {
+              "id": "7464b792-6ada-446e-b169-7eaa46592b3f",
+              "name": "VERSION CAT",
+              "value": "={{ $json['VERSION CAT'] }}",
+              "type": "string"
+            },
+            {
+              "id": "38052f8b-141c-4d26-8538-3ffc739c466e",
+              "name": "VERSION ENG",
+              "value": "={{ $json['VERSION ENG'] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        4220,
+        2260
+      ],
+      "id": "f769837e-869a-420b-8657-bd7ddac91d7b",
+      "name": "Edit Fields7"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5aa846c7-dc5e-412f-acd4-98809a28ddcc",
+              "name": "ID Pelicula",
+              "value": "={{ 1 + $itemIndex + 27142 }}",
+              "type": "string"
+            },
+            {
+              "id": "ad178d42-852f-4c70-861c-65dbe9b63b9c",
+              "name": "Nombre Pelicula CAS",
+              "value": "={{ $json['Nombre Pelicula CAS'] }}",
+              "type": "string"
+            },
+            {
+              "id": "c3c33170-19c8-4d7e-98dd-05cd201f42bb",
+              "name": "Reparto CAS",
+              "value": "={{ $json['Reparto CAS'] }}",
+              "type": "string"
+            },
+            {
+              "id": "5624ddd1-7e76-4dfb-a931-af57a64fa264",
+              "name": "Año",
+              "value": "={{ $json['Año'] }}",
+              "type": "number"
+            },
+            {
+              "id": "8211ab89-5e7a-48f7-92de-b6e512e2ef38",
+              "name": "Dirección",
+              "value": "={{ $json['Dirección'] }}",
+              "type": "string"
+            },
+            {
+              "id": "86c57b27-c684-4781-bf5d-5f5620f459f8",
+              "name": "Duración",
+              "value": "={{ $json['Duración'] }}",
+              "type": "string"
+            },
+            {
+              "id": "53aadef4-044e-4785-a679-03892a3e3c79",
+              "name": "Clasificación",
+              "value": "={{ $json['Clasificación'] }}",
+              "type": "string"
+            },
+            {
+              "id": "7be1865d-673d-45d0-be1a-013f99ba9c3d",
+              "name": "Tipo",
+              "value": "={{ $json['Año'] >= 2025 ? 'Estreno' : 'Película' }}",
+              "type": "string"
+            },
+            {
+              "id": "f84b2039-f201-4a1d-8409-d245d3f3f670",
+              "name": "Fecha",
+              "value": "={{ $json.Fecha || $json.Fechas || \"Fecha no disponible\" }}",
+              "type": "string"
+            },
+            {
+              "id": "0f1d0f77-b424-4a24-ad7d-1e510063834a",
+              "name": "Género CAS",
+              "value": "={{ $json['Género CAS'] }}",
+              "type": "string"
+            },
+            {
+              "id": "04df362b-1d09-4515-887c-8d02bad19a07",
+              "name": "Idioma CAS",
+              "value": "={{ $json['Idioma CAS'] }}",
+              "type": "string"
+            },
+            {
+              "id": "a28342a0-2f46-41e9-a7db-02c111ba6d0b",
+              "name": "País CAS",
+              "value": "={{ $json['País CAS'] }}",
+              "type": "string"
+            },
+            {
+              "id": "c2ebccd6-febe-4dee-9703-872c9dd20d49",
+              "name": "Sinopsis CAS",
+              "value": "={{ $json['Sinopsis CAS'] }}",
+              "type": "string"
+            },
+            {
+              "id": "3c0bb654-788d-40b0-955b-afed70fbb96a",
+              "name": "Nombre Película ENG",
+              "value": "={{ $json['Nombre Película ENG'] }}",
+              "type": "string"
+            },
+            {
+              "id": "ab51b9d9-a8e0-4db0-bd47-92b948a8fde4",
+              "name": "Fotograma",
+              "value": "={{ $json.Fotograma }}",
+              "type": "string"
+            },
+            {
+              "id": "6dc6becb-810a-4f7b-8eaf-6b4a3a4d1990",
+              "name": "Reparto CAT",
+              "value": "={{ $json['Reparto CAT'] }}",
+              "type": "string"
+            },
+            {
+              "id": "3ac23e6d-bdd6-45cf-bff2-f451bf49eca4",
+              "name": "Reparto ENG",
+              "value": "={{ $json['Reparto ENG'] }}",
+              "type": "string"
+            },
+            {
+              "id": "ca61cd81-082a-4a88-9c65-890e630efb2b",
+              "name": "Cartelera",
+              "value": "={{ $json.Cartelera.split('/').last() }}",
+              "type": "string"
+            },
+            {
+              "id": "3bfa65fc-1b16-45e1-a01f-6f564eda9991",
+              "name": "Género CAT",
+              "value": "={{ $json['Género CAT'] }}",
+              "type": "string"
+            },
+            {
+              "id": "b0787aba-cc16-4596-9384-ee1194da7c44",
+              "name": "Género ENG",
+              "value": "={{ $json['Género ENG'] }}",
+              "type": "string"
+            },
+            {
+              "id": "54ca0be3-3510-4137-94cd-18797b86bc39",
+              "name": "Trailer",
+              "value": "={{ $json.Trailer }}",
+              "type": "string"
+            },
+            {
+              "id": "49b4d7a7-7c59-4fe5-b2d5-b09931b132e7",
+              "name": "Sinopsis CAT",
+              "value": "={{ $json['Sinopsis CAT'] }}",
+              "type": "string"
+            },
+            {
+              "id": "d7031a72-9f5c-45e4-8702-6f8e075671df",
+              "name": "Sinopsis ENG",
+              "value": "={{ $json['Sinopsis ENG'] }}",
+              "type": "string"
+            },
+            {
+              "id": "ddd0a62e-bf5a-42c6-8ee7-9e39a6eaa10d",
+              "name": "Imagen CAS",
+              "value": "={{ $json['Imagen CAS'] }}",
+              "type": "string"
+            },
+            {
+              "id": "148d111a-b6ac-48e8-9061-747913b0ad54",
+              "name": "Idioma CAT",
+              "value": "={{ $json['Idioma CAT'] }}",
+              "type": "string"
+            },
+            {
+              "id": "0fadc1ea-5fd6-46ea-a50e-972a571c3948",
+              "name": "Idioma ENG",
+              "value": "={{ $json['Idioma ENG'] }}",
+              "type": "string"
+            },
+            {
+              "id": "967d0f1b-e7ef-4a1f-bff5-21ae1597e724",
+              "name": "País CAT",
+              "value": "={{ $json['País CAT'] }}",
+              "type": "string"
+            },
+            {
+              "id": "ba3a7ee7-e53c-43c9-ba7e-7d86642c7c2f",
+              "name": "País ENG",
+              "value": "={{ $json['País ENG'] }}",
+              "type": "string"
+            },
+            {
+              "id": "ce3e9a43-4cd9-41a6-9651-66197115bda7",
+              "name": "Imagen CAT",
+              "value": "={{ $json['Imagen CAT'] }}",
+              "type": "string"
+            },
+            {
+              "id": "f7b08d83-49cb-49b1-8ca0-9d493a7f3c9f",
+              "name": "Imagen ENG",
+              "value": "={{ $json['Imagen ENG'] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        4000,
+        1220
+      ],
+      "id": "2a303c6d-322e-4c88-aa22-c438a103115f",
+      "name": "Edit Fields8"
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "binaryPropertyName": "Pases_icub",
+        "options": {
+          "fileName": "={{ $('Schedule Trigger').item.json.timestamp.split('T')[0].replaceAll('-','') }}_Pases_icub.xlsx",
+          "sheetName": "Pases_icub"
+        }
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        4680,
+        2260
+      ],
+      "id": "844c6f83-91af-478d-838d-fa773cd62261",
+      "name": "Convert to File1"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "Peliculas",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        780,
+        2080
+      ],
+      "id": "de2eeea5-f708-4553-bfa8-9cf37056f5d8",
+      "name": "Split Out3"
+    },
+    {
+      "parameters": {
+        "sourceData": "binary",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "Peliculas",
+              "cssSelector": "article:has(a.event)",
+              "returnValue": "html",
+              "returnArray": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "HTML Extract9",
+      "type": "n8n-nodes-base.htmlExtract",
+      "position": [
+        580,
+        2080
+      ],
+      "typeVersion": 1,
+      "id": "e0fb56a6-31cf-470e-b3e0-b1032a90ab1a"
+    },
+    {
+      "parameters": {
+        "amount": 0
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -300,
+        2540
+      ],
+      "id": "22d2145e-0972-45ac-a972-47c749800548",
+      "name": "Wait",
+      "webhookId": "512a5877-0277-458b-bf96-5110fa96b5d6"
+    },
+    {
+      "parameters": {
+        "dataPropertyName": "=Peliculas",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "Titulo",
+              "cssSelector": "div > a > header"
+            },
+            {
+              "key": "Dias",
+              "cssSelector": "div > section > div > a > select > option",
+              "returnArray": true
+            },
+            {
+              "key": "Version",
+              "cssSelector": "div>section>div>div>section:not([style*=\"display: none\"]) header",
+              "returnArray": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "HTML Extract13",
+      "type": "n8n-nodes-base.htmlExtract",
+      "position": [
+        960,
+        2080
+      ],
+      "typeVersion": 1,
+      "id": "b660e9b9-3721-4212-964c-de39d8f96495"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "566c22b2-2cd4-4961-8632-672bfe71f23c",
+              "name": "NOMBRE PELICULA",
+              "value": "={{ $json.Titulo.split(/[(-]/)[0].trim() }}",
+              "type": "string"
+            },
+            {
+              "id": "50570457-002c-41db-956e-3c701368455a",
+              "name": "ID CINE",
+              "value": 1038,
+              "type": "number"
+            },
+            {
+              "id": "ca94315e-e976-4707-ab73-c473670f7f8b",
+              "name": "HORARIO CAS",
+              "value": "={{ $json.Dias.map(item => item.replaceAll(/[0-9:/.]/g, '').trim()).unique().slice(0,7).join('; ').replaceAll('avui', 'dj').replaceAll(/\\b(dv|ds|dg|dl|dt|dc|dj)\\b/g, match => ({dv:'V', ds:'S', dg:'D', dl:'L', dt:'M', dc:'X', dj:'J'})[match]) }}",
+              "type": "string"
+            },
+            {
+              "id": "300f551e-4db8-4e53-b93e-b2752505fe46",
+              "name": "HORARIO CAT",
+              "value": "={{ $json.Dias.map(item => item.replaceAll(/[0-9:/.]/g, '').trim()).unique().slice(0,7).join('; ').replaceAll('avui', 'dj') }}",
+              "type": "string"
+            },
+            {
+              "id": "bd6a60a0-cf5c-483b-aaf4-2413a161b77e",
+              "name": "HORARIO EN",
+              "value": "={{ $json.Dias.map(item => item.replaceAll(/[0-9:/.]/g, '').trim()).unique().slice(0,7).join('; ').replaceAll('avui', 'dj').replaceAll(/\\b(dv|ds|dg|dl|dt|dc|dj)\\b/g, match => ({dv:'Fri', ds:'Sat', dg:'Sun', dl:'Mon', dt:'Tue', dc:'Wed', dj:'Thu'})[match]) }}",
+              "type": "string"
+            },
+            {
+              "id": "62439df6-5eeb-43b3-b64f-0b382b09b5ea",
+              "name": "VERSION CAS",
+              "value": "={{$json.Version.some(item => item.includes('(')) ? $json.Version.filter(item => !item.includes('ATMOS')).map(item => item.split('(').pop()).join('; ').replaceAll(')', '') : '####'}}",
+              "type": "string"
+            },
+            {
+              "id": "36235e71-b28e-4273-8745-5c5f0c520ce3",
+              "name": "VERSION CAT",
+              "value": "={{$json.Version.some(item => item.includes('(')) ? $json.Version.filter(item => !item.includes('ATMOS')).map(item => item.split('(').pop()).join('; ').replaceAll(')', '') : '####'}}",
+              "type": "string"
+            },
+            {
+              "id": "e68e254a-98be-4ba7-8499-592299af78d9",
+              "name": "VERSION ENG",
+              "value": "=",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1180,
+        2080
+      ],
+      "id": "d616f957-4d95-45ae-9ba6-f7c4163d2e6f",
+      "name": "Edit Fields4"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "45dd401d-5e77-4482-9aec-b2fa6c1b7c70",
+              "leftValue": "={{ $json['NOMBRE PELICULA'] }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        3200,
+        2280
+      ],
+      "id": "40cfab67-1a2a-43d9-a0b2-3f81e379aa45",
+      "name": "Filter"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {
+          "includeBinaries": true
+        }
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        5060,
+        1740
+      ],
+      "id": "1410770e-f14b-41f3-b2df-f681c459b762",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        4820,
+        1740
+      ],
+      "id": "edf159c2-4b9a-4719-8857-a7c0c636502a",
+      "name": "Merge3"
+    },
+    {
+      "parameters": {
+        "url": "http://172.21.0.3:3000/api/search",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "lang",
+              "value": "es"
+            },
+            {
+              "name": "query",
+              "value": "={{ $json.Peliculas.replaceAll('/','') }}"
+            }
+          ]
+        },
+        "options": {
+          "batching": {
+            "batch": {
+              "batchSize": 1,
+              "batchInterval": 2000
+            }
+          },
+          "proxy": ""
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -3240,
+        740
+      ],
+      "id": "08305cb3-60ec-4fba-b6a8-ffad0d9fcdf2",
+      "name": "HTTP Request",
+      "alwaysOutputData": false,
+      "executeOnce": false,
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "b219f633-4251-4089-b2b7-31235d5b6e88",
+              "leftValue": "={{ $json.statusCode }}",
+              "rightValue": 404,
+              "operator": {
+                "type": "number",
+                "operation": "notEquals"
+              }
+            },
+            {
+              "id": "0092331a-39ff-4afd-9462-19001aec12d7",
+              "leftValue": "={{ $json.statusCode }}",
+              "rightValue": 429,
+              "operator": {
+                "type": "number",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        -3020,
+        740
+      ],
+      "id": "6affcecf-32d8-4715-8880-eb2bbb4f6c09",
+      "name": "Filter1",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.api }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -2820,
+        740
+      ],
+      "id": "ff14b805-38a3-4292-90df-e16454e31e20",
+      "name": "HTTP Request1",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "url": "http://172.21.0.3:3000/api/search",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "lang",
+              "value": "es"
+            },
+            {
+              "name": "query",
+              "value": "={{ $json.Titulo }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -2060,
+        740
+      ],
+      "id": "2ebd04e3-c745-4f67-98af-97982b761663",
+      "name": "HTTP Request3",
+      "alwaysOutputData": false,
+      "executeOnce": false,
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "b219f633-4251-4089-b2b7-31235d5b6e88",
+              "leftValue": "={{ $json.statusCode }}",
+              "rightValue": 404,
+              "operator": {
+                "type": "number",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        -1840,
+        740
+      ],
+      "id": "38ffa0c9-b726-4fe6-9dff-08bc2dc7652e",
+      "name": "Filter2",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "amount": 10
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -2460,
+        740
+      ],
+      "id": "3245eb85-f9f5-4b26-be0e-6c6c9ae8ac11",
+      "name": "Wait1",
+      "webhookId": "ec38c35e-8d62-4d48-8e11-75ed1f9bebb5",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "24d8530c-c351-4c8d-87e2-1ecc8096f1bd",
+              "leftValue": "={{ $json['ID PELI'] }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        4440,
+        2260
+      ],
+      "id": "f1a995e2-6649-48e9-8ec4-5a9e9f12a87f",
+      "name": "Filter3"
+    },
+    {
+      "parameters": {
+        "extractionValues": {
+          "values": [
+            {
+              "key": "Titulo",
+              "cssSelector": "h1"
+            },
+            {
+              "key": "Datos",
+              "cssSelector": "div.sinopsi > p",
+              "returnArray": true
+            },
+            {
+              "key": "Poster",
+              "cssSelector": "#genesis-content > div.side > img",
+              "returnValue": "attribute",
+              "attribute": "data-src"
+            },
+            {
+              "key": "Horario",
+              "cssSelector": "div.entry-content div.days",
+              "returnArray": true
+            },
+            {
+              "key": "Trailer",
+              "cssSelector": "div.video > iframe",
+              "returnValue": "attribute",
+              "attribute": "data-src"
+            },
+            {
+              "key": "Horario",
+              "cssSelector": "div.entry-content div.days > div.day",
+              "returnArray": true
+            }
+          ]
+        },
+        "options": {
+          "trimValues": true
+        }
+      },
+      "name": "Extraer datos Malda",
+      "type": "n8n-nodes-base.htmlExtract",
+      "position": [
+        1400,
+        1240
+      ],
+      "typeVersion": 1,
+      "id": "45a10d03-54ff-4a5b-b059-9e9474bbe76a"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {
+          "clashHandling": {
+            "values": {
+              "resolveClash": "preferInput1"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        2420,
+        900
+      ],
+      "id": "89fcd6b7-5ef7-43b9-8a9d-cba5d56c35a4",
+      "name": "Merge4"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {
+          "clashHandling": {
+            "values": {
+              "resolveClash": "preferInput1"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        2420,
+        1220
+      ],
+      "id": "efb256fb-d724-4e42-9861-1c6a03790e8d",
+      "name": "Merge5"
+    },
+    {
+      "parameters": {
+        "fileSelector": "/home/node/output.html",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        340,
+        2080
+      ],
+      "id": "a267010f-edfb-4a99-987b-04712d0b67f8",
+      "name": "Read/Write Files from Disk"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d6bf1a5c-79db-4d9b-a79a-a2cae0c2bd55",
+              "name": "Nombre Pelicula CAS",
+              "value": "={{ $json.message.content.Nombre || $json.message.content[\"Nombre de película\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "668eefb5-a90a-48ad-a628-5d5f9785e48d",
+              "name": "Género CAS",
+              "value": "={{ $json.message.content[\"Género\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "8aedbb6c-492e-4e9a-becd-9749884b3b68",
+              "name": "País CAS",
+              "value": "={{ $json.message.content[\"País\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "c07c7f9d-9517-45ed-9292-f5554a705f58",
+              "name": "Sinopsis CAS",
+              "value": "={{ $json.message.content.Sinopsis }}",
+              "type": "string"
+            },
+            {
+              "id": "ea5dfbff-dc26-4d00-b877-70ed27510be3",
+              "name": "Nombre Película ENG",
+              "value": "={{ $json.message.content.Name }}",
+              "type": "string"
+            },
+            {
+              "id": "bd362771-a5ba-4d72-869b-d27eab1d506b",
+              "name": "Género ENG",
+              "value": "={{ $json.message.content.Genre }}",
+              "type": "string"
+            },
+            {
+              "id": "db9b9b58-6cad-4f1f-aa0e-336b59ecdb21",
+              "name": "=Idioma ENG",
+              "value": "={{ $json.message.content.Language }}",
+              "type": "string"
+            },
+            {
+              "id": "226f780f-248a-451f-9b79-a30c85b05c2b",
+              "name": "País ENG",
+              "value": "={{ $json.message.content.Country }}",
+              "type": "string"
+            },
+            {
+              "id": "c73d672b-8bd1-4467-97ce-193ec0b2dac0",
+              "name": "Sinopsis ENG",
+              "value": "={{ $json.message.content.Synopsis }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1240,
+        740
+      ],
+      "id": "3a4f8dfa-8bd6-4bb8-a44e-80252c3b3e36",
+      "name": "Edit Fields14",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "Actúa como traductor. Te enviaré datos de películas en catalán correspondientes a los siguientes campos: Nombre de película, Género, Idioma, País y Sinopsis. Tu tarea es traducir cada campo al castellano y al inglés en el orden indicado, y devolver el resultado manteniendo el orden original de los campos y mostrando únicamente las traducciones.",
+              "role": "system"
+            },
+            {
+              "content": "={{ $json[\"Nombre Pelicula CAS\"] }}; {{ $json[\"Género CAT\"] }}; {{ $json[\"Idioma CAT\"] }}; {{ $json[\"País CAT\"] }}; {{ $json[\"Sinopsis CAT\"] }}"
+            },
+            {
+              "content": "Asegúrate de que el output del JSON sea siempre Nombre, Género, Idioma, País, Sinopsis, Name, Genre, Language, Country y Synopsis sin ningún tipo de de variación (ie Nombre de película en vez de nombre)",
+              "role": "assistant"
+            }
+          ]
+        },
+        "jsonOutput": true,
+        "options": {
+          "temperature": 0
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        -1600,
+        740
+      ],
+      "id": "09457d43-6711-4e34-b766-319b6294eb1f",
+      "name": "OpenAI",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "Peliculas",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        780,
+        2260
+      ],
+      "id": "7c9ce986-8ce7-40ea-b335-14cf0bbaf98a",
+      "name": "Split Out5"
+    },
+    {
+      "parameters": {
+        "sourceData": "binary",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "Peliculas",
+              "cssSelector": "article:has(a.event)",
+              "returnValue": "html",
+              "returnArray": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "HTML Extract11",
+      "type": "n8n-nodes-base.htmlExtract",
+      "position": [
+        580,
+        2260
+      ],
+      "typeVersion": 1,
+      "id": "029dcc0f-f9cc-40c8-a221-16f5176c2892"
+    },
+    {
+      "parameters": {
+        "dataPropertyName": "=Peliculas",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "Titulo",
+              "cssSelector": "div > a > header"
+            },
+            {
+              "key": "Dias",
+              "cssSelector": "div > section > div > a > select > option",
+              "returnArray": true
+            },
+            {
+              "key": "Version",
+              "cssSelector": "div>section>div>div>section:not([style*=\"display: none\"]) header",
+              "returnArray": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "HTML Extract15",
+      "type": "n8n-nodes-base.htmlExtract",
+      "position": [
+        960,
+        2260
+      ],
+      "typeVersion": 1,
+      "id": "0b145c5e-3f50-4e80-902f-579fd6d5186c"
+    },
+    {
+      "parameters": {
+        "fileSelector": "/home/node/output.html",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        340,
+        2260
+      ],
+      "id": "989a3780-b394-4a81-8c09-072e22dbfcaa",
+      "name": "Read/Write Files from Disk2"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "Peliculas",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        780,
+        2420
+      ],
+      "id": "2b13c617-ea73-4047-a31a-4159f15781ff",
+      "name": "Split Out6"
+    },
+    {
+      "parameters": {
+        "sourceData": "binary",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "Peliculas",
+              "cssSelector": "article:has(a.event)",
+              "returnValue": "html",
+              "returnArray": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "HTML Extract12",
+      "type": "n8n-nodes-base.htmlExtract",
+      "position": [
+        580,
+        2420
+      ],
+      "typeVersion": 1,
+      "id": "4e97509e-4352-44fd-85e9-b63f3b4f8292"
+    },
+    {
+      "parameters": {
+        "dataPropertyName": "=Peliculas",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "Titulo",
+              "cssSelector": "div > a > header"
+            },
+            {
+              "key": "Dias",
+              "cssSelector": "div > section > div > a > select > option",
+              "returnArray": true
+            },
+            {
+              "key": "Version",
+              "cssSelector": "div>section>div>div>section:not([style*=\"display: none\"]) header",
+              "returnArray": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "HTML Extract16",
+      "type": "n8n-nodes-base.htmlExtract",
+      "position": [
+        960,
+        2420
+      ],
+      "typeVersion": 1,
+      "id": "ac368ccc-8eaf-4c7d-a182-805634c52133"
+    },
+    {
+      "parameters": {
+        "fileSelector": "/home/node/output.html",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        340,
+        2420
+      ],
+      "id": "f8ea8343-53c4-425b-a3c9-adc37b796510",
+      "name": "Read/Write Files from Disk3"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "Peliculas",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        780,
+        2580
+      ],
+      "id": "3d9ce79a-fbfc-42da-8f07-67d1c67f63fd",
+      "name": "Split Out7"
+    },
+    {
+      "parameters": {
+        "sourceData": "binary",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "Peliculas",
+              "cssSelector": "article:has(a.event)",
+              "returnValue": "html",
+              "returnArray": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "HTML Extract17",
+      "type": "n8n-nodes-base.htmlExtract",
+      "position": [
+        580,
+        2580
+      ],
+      "typeVersion": 1,
+      "id": "5f110e7c-be2c-4ee4-bcb1-9bd3b1da754b"
+    },
+    {
+      "parameters": {
+        "dataPropertyName": "=Peliculas",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "Titulo",
+              "cssSelector": "div > a > header"
+            },
+            {
+              "key": "Dias",
+              "cssSelector": "div > section > div > a > select > option",
+              "returnArray": true
+            },
+            {
+              "key": "Version",
+              "cssSelector": "div>section>div>div>section:not([style*=\"display: none\"]) header",
+              "returnArray": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "HTML Extract18",
+      "type": "n8n-nodes-base.htmlExtract",
+      "position": [
+        960,
+        2580
+      ],
+      "typeVersion": 1,
+      "id": "c9594405-3de5-4461-a3b6-cc568a480bbd"
+    },
+    {
+      "parameters": {
+        "fileSelector": "/home/node/output.html",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        340,
+        2580
+      ],
+      "id": "b1b50724-37d7-4b4c-9c4f-124a5cc07720",
+      "name": "Read/Write Files from Disk4"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "Peliculas",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        780,
+        2740
+      ],
+      "id": "f5a1b800-8953-4f7b-bfef-2ba65bffc405",
+      "name": "Split Out8"
+    },
+    {
+      "parameters": {
+        "sourceData": "binary",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "Peliculas",
+              "cssSelector": "article:has(a.event)",
+              "returnValue": "html",
+              "returnArray": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "HTML Extract19",
+      "type": "n8n-nodes-base.htmlExtract",
+      "position": [
+        580,
+        2740
+      ],
+      "typeVersion": 1,
+      "id": "640887d5-9758-4939-b472-f83d5ca7f9c5"
+    },
+    {
+      "parameters": {
+        "dataPropertyName": "=Peliculas",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "Titulo",
+              "cssSelector": "div > a > header"
+            },
+            {
+              "key": "Dias",
+              "cssSelector": "div > section > div > a > select > option",
+              "returnArray": true
+            },
+            {
+              "key": "Version",
+              "cssSelector": "div>section>div>div>section:not([style*=\"display: none\"]) header",
+              "returnArray": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "HTML Extract20",
+      "type": "n8n-nodes-base.htmlExtract",
+      "position": [
+        960,
+        2740
+      ],
+      "typeVersion": 1,
+      "id": "705eeb71-0a88-497a-bdd8-7d18155cd452"
+    },
+    {
+      "parameters": {
+        "fileSelector": "/home/node/output.html",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        340,
+        2740
+      ],
+      "id": "5f0b7ba1-a588-4eb6-b63b-cac74d25ce75",
+      "name": "Read/Write Files from Disk5"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "Peliculas",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        780,
+        2920
+      ],
+      "id": "a49ed37d-c338-4c71-a99b-23030a732b01",
+      "name": "Split Out9"
+    },
+    {
+      "parameters": {
+        "sourceData": "binary",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "Peliculas",
+              "cssSelector": "article:has(a.event)",
+              "returnValue": "html",
+              "returnArray": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "HTML Extract21",
+      "type": "n8n-nodes-base.htmlExtract",
+      "position": [
+        580,
+        2920
+      ],
+      "typeVersion": 1,
+      "id": "11f7c0bd-51ce-46c7-9a73-1d60418a91b1"
+    },
+    {
+      "parameters": {
+        "dataPropertyName": "=Peliculas",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "Titulo",
+              "cssSelector": "div > a > header"
+            },
+            {
+              "key": "Dias",
+              "cssSelector": "div > section > div > a > select > option",
+              "returnArray": true
+            },
+            {
+              "key": "Version",
+              "cssSelector": "div>section>div>div>section:not([style*=\"display: none\"]) header",
+              "returnArray": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "HTML Extract22",
+      "type": "n8n-nodes-base.htmlExtract",
+      "position": [
+        960,
+        2920
+      ],
+      "typeVersion": 1,
+      "id": "04e1b184-91cb-498f-813b-b736a8f336c5"
+    },
+    {
+      "parameters": {
+        "fileSelector": "/home/node/output.html",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        340,
+        2920
+      ],
+      "id": "95606d83-ece5-4555-b439-a23b5dd59cd4",
+      "name": "Read/Write Files from Disk6"
+    },
+    {
+      "parameters": {
+        "command": "python3 mooby-request.py https://www.moobycinemas.com/aribau"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        120,
+        2260
+      ],
+      "id": "9affdd34-dea1-4d3f-a227-21cafc92c65f",
+      "name": "Selenium Aribau"
+    },
+    {
+      "parameters": {
+        "command": "python3 mooby-request.py https://www.moobycinemas.com/arenas"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        120,
+        2080
+      ],
+      "id": "6cb8f1d2-4f96-4af8-8f19-59e1f72a3853",
+      "name": "Selenium Arenas"
+    },
+    {
+      "parameters": {
+        "command": "python3 mooby-request.py https://www.moobycinemas.com/balmes"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        120,
+        2420
+      ],
+      "id": "d6f64519-ff76-45fc-bc66-e5804a10fcb9",
+      "name": "Selenium Balmes"
+    },
+    {
+      "parameters": {
+        "command": "python3 mooby-request.py https://www.moobycinemas.com/bosque"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        120,
+        2580
+      ],
+      "id": "af8fb875-4b79-456c-b3ff-18d197c3a561",
+      "name": "Selenium Bosque"
+    },
+    {
+      "parameters": {
+        "command": "python3 mooby-request.py https://www.moobycinemas.com/glories"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        120,
+        2740
+      ],
+      "id": "70b8e1df-b2dd-43e9-8015-510cf9ee06cf",
+      "name": "Selenium Glories"
+    },
+    {
+      "parameters": {
+        "command": "python3 mooby-request.py https://www.moobycinemas.com/sarria"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        120,
+        2920
+      ],
+      "id": "a51ea41c-1dd5-4f81-ae50-75c7f7dd681e",
+      "name": "Selenium Sarria"
+    },
+    {
+      "parameters": {
+        "operation": "xls",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        3980,
+        2480
+      ],
+      "id": "f378a46e-da41-44db-86d8-8a3256caa72d",
+      "name": "Convert to File2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "566c22b2-2cd4-4961-8632-672bfe71f23c",
+              "name": "NOMBRE PELICULA",
+              "value": "={{ $json.Titulo.split(/[(-]/)[0].trim() }}",
+              "type": "string"
+            },
+            {
+              "id": "50570457-002c-41db-956e-3c701368455a",
+              "name": "ID CINE",
+              "value": 8,
+              "type": "number"
+            },
+            {
+              "id": "ca94315e-e976-4707-ab73-c473670f7f8b",
+              "name": "HORARIO CAS",
+              "value": "={{ $json.Dias.map(item => item.replaceAll(/[0-9:/.]/g, '').trim()).unique().slice(0,7).join('; ').replaceAll('avui', 'dj').replaceAll(/\\b(dv|ds|dg|dl|dt|dc|dj)\\b/g, match => ({dv:'V', ds:'S', dg:'D', dl:'L', dt:'M', dc:'X', dj:'J'})[match]) }}",
+              "type": "string"
+            },
+            {
+              "id": "300f551e-4db8-4e53-b93e-b2752505fe46",
+              "name": "HORARIO CAT",
+              "value": "={{ $json.Dias.map(item => item.replaceAll(/[0-9:/.]/g, '').trim()).unique().slice(0,7).join('; ').replaceAll('avui', 'dj') }}",
+              "type": "string"
+            },
+            {
+              "id": "bd6a60a0-cf5c-483b-aaf4-2413a161b77e",
+              "name": "HORARIO EN",
+              "value": "={{ $json.Dias.map(item => item.replaceAll(/[0-9:/.]/g, '').trim()).unique().slice(0,7).join('; ').replaceAll('avui', 'dj').replaceAll(/\\b(dv|ds|dg|dl|dt|dc|dj)\\b/g, match => ({dv:'Fri', ds:'Sat', dg:'Sun', dl:'Mon', dt:'Tue', dc:'Wed', dj:'Thu'})[match]) }}",
+              "type": "string"
+            },
+            {
+              "id": "62439df6-5eeb-43b3-b64f-0b382b09b5ea",
+              "name": "VERSION CAS",
+              "value": "={{ $json.Version.includes('(') ? $json.Version.filter(item => !item.includes('ATMOS')).map(item => item.split('(').last()).join('; ').replaceAll(')','') : '####' }}",
+              "type": "string"
+            },
+            {
+              "id": "36235e71-b28e-4273-8745-5c5f0c520ce3",
+              "name": "VERSION CAT",
+              "value": "={{ $json.Version.includes('(') ? $json.Version.filter(item => !item.includes('ATMOS')).map(item => item.split('(').last()).join('; ').replaceAll(')','') : '####' }}",
+              "type": "string"
+            },
+            {
+              "id": "e68e254a-98be-4ba7-8499-592299af78d9",
+              "name": "VERSION ENG",
+              "value": "=",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1180,
+        2260
+      ],
+      "id": "9f4eec11-be31-45a5-a52d-c2b87ffebe67",
+      "name": "Edit Fields9"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "566c22b2-2cd4-4961-8632-672bfe71f23c",
+              "name": "NOMBRE PELICULA",
+              "value": "={{ $json.Titulo.split(/[(-]/)[0].trim() }}",
+              "type": "string"
+            },
+            {
+              "id": "50570457-002c-41db-956e-3c701368455a",
+              "name": "ID CINE",
+              "value": "={{ 1172 }}",
+              "type": "number"
+            },
+            {
+              "id": "ca94315e-e976-4707-ab73-c473670f7f8b",
+              "name": "HORARIO CAS",
+              "value": "={{ $json.Dias.map(item => item.replaceAll(/[0-9:/.]/g, '').trim()).unique().slice(0,7).join('; ').replaceAll('avui', 'dj').replaceAll(/\\b(dv|ds|dg|dl|dt|dc|dj)\\b/g, match => ({dv:'V', ds:'S', dg:'D', dl:'L', dt:'M', dc:'X', dj:'J'})[match]) }}",
+              "type": "string"
+            },
+            {
+              "id": "300f551e-4db8-4e53-b93e-b2752505fe46",
+              "name": "HORARIO CAT",
+              "value": "={{ $json.Dias.map(item => item.replaceAll(/[0-9:/.]/g, '').trim()).unique().slice(0,7).join('; ').replaceAll('avui', 'dj') }}",
+              "type": "string"
+            },
+            {
+              "id": "bd6a60a0-cf5c-483b-aaf4-2413a161b77e",
+              "name": "HORARIO EN",
+              "value": "={{ $json.Dias.map(item => item.replaceAll(/[0-9:/.]/g, '').trim()).unique().slice(0,7).join('; ').replaceAll('avui', 'dj').replaceAll(/\\b(dv|ds|dg|dl|dt|dc|dj)\\b/g, match => ({dv:'Fri', ds:'Sat', dg:'Sun', dl:'Mon', dt:'Tue', dc:'Wed', dj:'Thu'})[match]) }}",
+              "type": "string"
+            },
+            {
+              "id": "62439df6-5eeb-43b3-b64f-0b382b09b5ea",
+              "name": "VERSION CAS",
+              "value": "={{$json.Version.some(item => item.includes('(')) ? $json.Version.filter(item => !item.includes('ATMOS')).map(item => item.split('(').pop()).join('; ').replaceAll(')', '') : '####'}}",
+              "type": "string"
+            },
+            {
+              "id": "36235e71-b28e-4273-8745-5c5f0c520ce3",
+              "name": "VERSION CAT",
+              "value": "={{$json.Version.some(item => item.includes('(')) ? $json.Version.filter(item => !item.includes('ATMOS')).map(item => item.split('(').pop()).join('; ').replaceAll(')', '') : '####'}}",
+              "type": "string"
+            },
+            {
+              "id": "e68e254a-98be-4ba7-8499-592299af78d9",
+              "name": "VERSION ENG",
+              "value": "=",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1180,
+        2420
+      ],
+      "id": "56b07a2c-abad-40fc-aa3f-2f5addecd0bd",
+      "name": "Edit Fields10"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "566c22b2-2cd4-4961-8632-672bfe71f23c",
+              "name": "NOMBRE PELICULA",
+              "value": "={{ $json.Titulo.split(/[(-]/)[0].trim() }}",
+              "type": "string"
+            },
+            {
+              "id": "50570457-002c-41db-956e-3c701368455a",
+              "name": "ID CINE",
+              "value": 14,
+              "type": "number"
+            },
+            {
+              "id": "ca94315e-e976-4707-ab73-c473670f7f8b",
+              "name": "HORARIO CAS",
+              "value": "={{ $json.Dias.map(item => item.replaceAll(/[0-9:/.]/g, '').trim()).unique().slice(0,7).join('; ').replaceAll('avui', 'dj').replaceAll(/\\b(dv|ds|dg|dl|dt|dc|dj)\\b/g, match => ({dv:'V', ds:'S', dg:'D', dl:'L', dt:'M', dc:'X', dj:'J'})[match]) }}",
+              "type": "string"
+            },
+            {
+              "id": "300f551e-4db8-4e53-b93e-b2752505fe46",
+              "name": "HORARIO CAT",
+              "value": "={{ $json.Dias.map(item => item.replaceAll(/[0-9:/.]/g, '').trim()).unique().slice(0,7).join('; ').replaceAll('avui', 'dj') }}",
+              "type": "string"
+            },
+            {
+              "id": "bd6a60a0-cf5c-483b-aaf4-2413a161b77e",
+              "name": "HORARIO EN",
+              "value": "={{ $json.Dias.map(item => item.replaceAll(/[0-9:/.]/g, '').trim()).unique().slice(0,7).join('; ').replaceAll('avui', 'dj').replaceAll(/\\b(dv|ds|dg|dl|dt|dc|dj)\\b/g, match => ({dv:'Fri', ds:'Sat', dg:'Sun', dl:'Mon', dt:'Tue', dc:'Wed', dj:'Thu'})[match]) }}",
+              "type": "string"
+            },
+            {
+              "id": "62439df6-5eeb-43b3-b64f-0b382b09b5ea",
+              "name": "VERSION CAS",
+              "value": "={{$json.Version.some(item => item.includes('(')) ? $json.Version.filter(item => !item.includes('ATMOS')).map(item => item.split('(').pop()).join('; ').replaceAll(')', '') : '####'}}",
+              "type": "string"
+            },
+            {
+              "id": "36235e71-b28e-4273-8745-5c5f0c520ce3",
+              "name": "VERSION CAT",
+              "value": "={{$json.Version.some(item => item.includes('(')) ? $json.Version.filter(item => !item.includes('ATMOS')).map(item => item.split('(').pop()).join('; ').replaceAll(')', '') : '####'}}",
+              "type": "string"
+            },
+            {
+              "id": "e68e254a-98be-4ba7-8499-592299af78d9",
+              "name": "VERSION ENG",
+              "value": "=",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1180,
+        2580
+      ],
+      "id": "f4cf3fcc-c4ae-4139-99c7-cd92d98c2c73",
+      "name": "Edit Fields11"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "566c22b2-2cd4-4961-8632-672bfe71f23c",
+              "name": "NOMBRE PELICULA",
+              "value": "={{ $json.Titulo.split(/[(-]/)[0].trim() }}",
+              "type": "string"
+            },
+            {
+              "id": "50570457-002c-41db-956e-3c701368455a",
+              "name": "ID CINE",
+              "value": 48,
+              "type": "number"
+            },
+            {
+              "id": "ca94315e-e976-4707-ab73-c473670f7f8b",
+              "name": "HORARIO CAS",
+              "value": "={{ $json.Dias.map(item => item.replaceAll(/[0-9:/.]/g, '').trim()).unique().slice(0,7).join('; ').replaceAll('avui', 'dj').replaceAll(/\\b(dv|ds|dg|dl|dt|dc|dj)\\b/g, match => ({dv:'V', ds:'S', dg:'D', dl:'L', dt:'M', dc:'X', dj:'J'})[match]) }}",
+              "type": "string"
+            },
+            {
+              "id": "300f551e-4db8-4e53-b93e-b2752505fe46",
+              "name": "HORARIO CAT",
+              "value": "={{ $json.Dias.map(item => item.replaceAll(/[0-9:/.]/g, '').trim()).unique().slice(0,7).join('; ').replaceAll('avui', 'dj') }}",
+              "type": "string"
+            },
+            {
+              "id": "bd6a60a0-cf5c-483b-aaf4-2413a161b77e",
+              "name": "HORARIO EN",
+              "value": "={{ $json.Dias.map(item => item.replaceAll(/[0-9:/.]/g, '').trim()).unique().slice(0,7).join('; ').replaceAll('avui', 'dj').replaceAll(/\\b(dv|ds|dg|dl|dt|dc|dj)\\b/g, match => ({dv:'Fri', ds:'Sat', dg:'Sun', dl:'Mon', dt:'Tue', dc:'Wed', dj:'Thu'})[match]) }}",
+              "type": "string"
+            },
+            {
+              "id": "62439df6-5eeb-43b3-b64f-0b382b09b5ea",
+              "name": "VERSION CAS",
+              "value": "={{$json.Version.some(item => item.includes('(')) ? $json.Version.filter(item => !item.includes('ATMOS')).map(item => item.split('(').pop()).join('; ').replaceAll(')', '') : '####'}}",
+              "type": "string"
+            },
+            {
+              "id": "36235e71-b28e-4273-8745-5c5f0c520ce3",
+              "name": "VERSION CAT",
+              "value": "={{$json.Version.some(item => item.includes('(')) ? $json.Version.filter(item => !item.includes('ATMOS')).map(item => item.split('(').pop()).join('; ').replaceAll(')', '') : '####'}}",
+              "type": "string"
+            },
+            {
+              "id": "e68e254a-98be-4ba7-8499-592299af78d9",
+              "name": "VERSION ENG",
+              "value": "=",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1180,
+        2740
+      ],
+      "id": "db50d353-125f-4cfd-875c-600f96c3fc7a",
+      "name": "Edit Fields12"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "566c22b2-2cd4-4961-8632-672bfe71f23c",
+              "name": "NOMBRE PELICULA",
+              "value": "={{ $json.Titulo.split(/[(-]/)[0].trim() }}",
+              "type": "string"
+            },
+            {
+              "id": "50570457-002c-41db-956e-3c701368455a",
+              "name": "ID CINE",
+              "value": 49,
+              "type": "number"
+            },
+            {
+              "id": "ca94315e-e976-4707-ab73-c473670f7f8b",
+              "name": "HORARIO CAS",
+              "value": "={{ $json.Dias.map(item => item.replaceAll(/[0-9:/.]/g, '').trim()).unique().slice(0,7).join('; ').replaceAll('avui', 'dj').replaceAll(/\\b(dv|ds|dg|dl|dt|dc|dj)\\b/g, match => ({dv:'V', ds:'S', dg:'D', dl:'L', dt:'M', dc:'X', dj:'J'})[match]) }}",
+              "type": "string"
+            },
+            {
+              "id": "300f551e-4db8-4e53-b93e-b2752505fe46",
+              "name": "HORARIO CAT",
+              "value": "={{ $json.Dias.map(item => item.replaceAll(/[0-9:/.]/g, '').trim()).unique().slice(0,7).join('; ').replaceAll('avui', 'dj') }}",
+              "type": "string"
+            },
+            {
+              "id": "bd6a60a0-cf5c-483b-aaf4-2413a161b77e",
+              "name": "HORARIO EN",
+              "value": "={{ $json.Dias.map(item => item.replaceAll(/[0-9:/.]/g, '').trim()).unique().slice(0,7).join('; ').replaceAll('avui', 'dj').replaceAll(/\\b(dv|ds|dg|dl|dt|dc|dj)\\b/g, match => ({dv:'Fri', ds:'Sat', dg:'Sun', dl:'Mon', dt:'Tue', dc:'Wed', dj:'Thu'})[match]) }}",
+              "type": "string"
+            },
+            {
+              "id": "62439df6-5eeb-43b3-b64f-0b382b09b5ea",
+              "name": "VERSION CAS",
+              "value": "={{$json.Version.some(item => item.includes('(')) ? $json.Version.filter(item => !item.includes('ATMOS')).map(item => item.split('(').pop()).join('; ').replaceAll(')', '') : '####'}}",
+              "type": "string"
+            },
+            {
+              "id": "36235e71-b28e-4273-8745-5c5f0c520ce3",
+              "name": "VERSION CAT",
+              "value": "={{$json.Version.some(item => item.includes('(')) ? $json.Version.filter(item => !item.includes('ATMOS')).map(item => item.split('(').pop()).join('; ').replaceAll(')', '') : '####'}}",
+              "type": "string"
+            },
+            {
+              "id": "e68e254a-98be-4ba7-8499-592299af78d9",
+              "name": "VERSION ENG",
+              "value": "=",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1180,
+        2920
+      ],
+      "id": "965369e4-3871-4200-92dc-c3c800eed426",
+      "name": "Edit Fields13"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "eefa412f-0ed7-4ec0-9038-a8b6987a788d",
+              "name": "Género ENG",
+              "value": "={{ $json.text.split(';')[0] }}",
+              "type": "string"
+            },
+            {
+              "id": "38e538af-7f7c-40f2-b813-eb8eedd39c66",
+              "name": "Idioma ENG",
+              "value": "={{ $json.text.split(';')[1] }}",
+              "type": "string"
+            },
+            {
+              "id": "b73d5bfb-43dc-42ea-9dea-f7036718ee15",
+              "name": "País ENG",
+              "value": "={{ $json.text.split(';')[2] }}",
+              "type": "string"
+            },
+            {
+              "id": "47f35658-2f5a-4203-8347-e4e4ae8b8e26",
+              "name": "Sinopsis ENG",
+              "value": "={{ $json.text.split(';')[3] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2180,
+        1100
+      ],
+      "id": "b5321906-4eaf-46b7-a79b-496a7e1b7ad6",
+      "name": "Edit Fields15"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "38e538af-7f7c-40f2-b813-eb8eedd39c66",
+              "name": "Idioma ENG",
+              "value": "={{ $json.text.split(';')[0] }}",
+              "type": "string"
+            },
+            {
+              "id": "b73d5bfb-43dc-42ea-9dea-f7036718ee15",
+              "name": "País ENG",
+              "value": "={{ $json.text.split(';')[1] }}",
+              "type": "string"
+            },
+            {
+              "id": "47f35658-2f5a-4203-8347-e4e4ae8b8e26",
+              "name": "Sinopsis ENG",
+              "value": "={{ $json.text.split(';')[2] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2180,
+        1360
+      ],
+      "id": "3ff715a6-b857-41c4-91ea-9969e1da8912",
+      "name": "Edit Fields16"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {
+          "clashHandling": {
+            "values": {
+              "resolveClash": "preferInput1"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        2420,
+        1500
+      ],
+      "id": "33ede7e5-4093-45cb-902e-cf1cea0f8935",
+      "name": "Merge6"
+    },
+    {
+      "parameters": {
+        "amount": 60
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1900,
+        1440
+      ],
+      "id": "be67cfaa-0d58-4690-a15d-3ca90c238be4",
+      "name": "Wait2",
+      "webhookId": "e78b7a8c-7e45-425b-8c5f-13ad0c76d2bd"
+    },
+    {
+      "parameters": {
+        "batchSize": 50,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1900,
+        700
+      ],
+      "id": "288296e8-f902-44c9-adae-92d616a8e162",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "amount": 60
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        2460,
+        760
+      ],
+      "id": "8f932028-a2e7-44d8-9f89-d131a0f24de3",
+      "name": "Wait4",
+      "webhookId": "0178f68c-253e-43d3-865a-37436999b8f5"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "42973bd5-6b1d-46a6-a1d3-b1a8f5a13e0c",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "url": "https://zumzeigcine.coop/cinema/sessions/",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -120,
+        440
+      ],
+      "id": "f4f86a6a-3d1d-4002-8091-4cc633b0d1e8",
+      "name": "HTTP Request Zumzeig"
+    },
+    {
+      "parameters": {
+        "extractionValues": {
+          "values": [
+            {
+              "key": "Peliculas",
+              "cssSelector": ".film h2.filmtitle",
+              "returnArray": true
+            },
+            {
+              "key": "BloquesPeliculas",
+              "cssSelector": ".film",
+              "returnValue": "html",
+              "returnArray": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "HTML Extract3",
+      "type": "n8n-nodes-base.htmlExtract",
+      "position": [
+        20,
+        400
+      ],
+      "typeVersion": 1,
+      "id": "de3d516d-56c0-46cf-94ff-4adddb14ed1a"
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "Titulo",
+              "cssSelector": "h1"
+            },
+            {
+              "key": "Sinopsis",
+              "cssSelector": "#content > div:nth-child(4) > div.rowcontent.col-md-6 > p"
+            },
+            {
+              "key": "Trailer",
+              "cssSelector": "div.linkdestacado > a",
+              "returnValue": "attribute",
+              "attribute": "href"
+            },
+            {
+              "key": "Ficha Tecnica",
+              "cssSelector": "#content > div:nth-child(7) > div.rowcontent.col-md-6 > p",
+              "returnArray": true
+            },
+            {
+              "key": "Tipo",
+              "cssSelector": "h1",
+              "returnValue": "attribute",
+              "attribute": "class"
+            },
+            {
+              "key": "Fotograma",
+              "cssSelector": "#content > div.b.full > div > img",
+              "returnValue": "attribute",
+              "attribute": "src",
+              "returnArray": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        820,
+        560
+      ],
+      "id": "a8d65232-c4ce-4fb8-8c16-128f38e8406d",
+      "name": "HTML"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b83a8296-3300-4dec-8f9f-f976d9f43ff8",
+              "name": "ID Cine",
+              "value": "=4",
+              "type": "number"
+            },
+            {
+              "id": "6ceb8b66-f65f-4a84-8526-b7a1ecf08b5d",
+              "name": "ID Pelicula",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "c6164539-8472-429f-a83f-0927634ab2ac",
+              "name": "Nombre Pelicula CAS",
+              "value": "={{ $json.Titulo }}",
+              "type": "string"
+            },
+            {
+              "id": "1012e859-c1ad-4f05-89bd-ac25231e2977",
+              "name": "Reparto CAS",
+              "value": "=",
+              "type": "string"
+            },
+            {
+              "id": "6791778e-1f54-4810-99a3-b81e2f948444",
+              "name": "Año",
+              "value": "={{ $json[\"Ficha Tecnica\"][2].split(': ')[1] }}",
+              "type": "number"
+            },
+            {
+              "id": "9a4da4d1-0ce7-4f49-a481-4b2538efc3a4",
+              "name": "Dirección",
+              "value": "={{ $json[\"Ficha Tecnica\"][1].split(': ')[1] }}",
+              "type": "string"
+            },
+            {
+              "id": "1c34cd15-5c9e-4a62-a284-49d83ecf65e6",
+              "name": "Duración",
+              "value": "={{ $json[\"Ficha Tecnica\"][3].split(': ')[1].replaceAll(\"'\", ' min') }}",
+              "type": "string"
+            },
+            {
+              "id": "0514c018-8b05-4ea5-9097-d8e48b0a5604",
+              "name": "Clasificación",
+              "value": "={{ $json[\"Ficha Tecnica\"][7].split(': ')[1] }}",
+              "type": "string"
+            },
+            {
+              "id": "6f46f198-40b2-45ea-a868-8eb3fed2cba2",
+              "name": "Tipo",
+              "value": "={{ $json['Año'] >= 2025 ? 'Estreno' : 'Película' }}",
+              "type": "string"
+            },
+            {
+              "id": "4203505a-190a-4925-aea4-48f204eb05ca",
+              "name": "Fecha",
+              "value": "={{ $json.Fecha || $json.Fechas || \"Fecha no disponible\" }}",
+              "type": "string"
+            },
+            {
+              "id": "af417495-89d2-41e0-91d5-d3d204f029f0",
+              "name": "Género CAS",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "266d8463-849b-4c9c-9ad8-9e7a1dedd7b2",
+              "name": "Idioma CAS",
+              "value": "={{ $json[\"Ficha Tecnica\"][5].split(': ')[1] }}",
+              "type": "string"
+            },
+            {
+              "id": "a77d8211-037e-42b1-960a-10f824e34edc",
+              "name": "País CAS",
+              "value": "={{ $json[\"Ficha Tecnica\"][4].split(': ')[1] }}",
+              "type": "string"
+            },
+            {
+              "id": "b43b2bc2-ec2b-4bc7-b6a9-909a6a8ea3a2",
+              "name": "Sinopsis CAS",
+              "value": "={{ $json.Sinopsis.replaceAll('\\n',' ') }}",
+              "type": "string"
+            },
+            {
+              "id": "f2f5e03c-5ae6-44c4-93b2-da3521a83036",
+              "name": "Nombre Película ENG",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "0f4c57db-1969-4f7d-bfd1-cef27db1a53a",
+              "name": "Fotograma",
+              "value": "=https://zumzeigcine.coop{{ $json.Fotograma.last() }}",
+              "type": "string"
+            },
+            {
+              "id": "150a1bad-a43d-4980-a9de-357fa04d8820",
+              "name": "Reparto CAT",
+              "value": "=",
+              "type": "string"
+            },
+            {
+              "id": "a1e780c6-c6e0-43ea-9710-4c8f5884ab84",
+              "name": "Reparto ENG",
+              "value": "=",
+              "type": "string"
+            },
+            {
+              "id": "ddaefa08-f42c-4ef9-b38d-92d9980ac939",
+              "name": "Cartelera",
+              "value": "=",
+              "type": "string"
+            },
+            {
+              "id": "87529dc5-1f00-4ba6-8c16-3880ca1162d9",
+              "name": "Género CAT",
+              "value": "=",
+              "type": "string"
+            },
+            {
+              "id": "c20a0944-9341-497b-80a9-943cc91a63a5",
+              "name": "Género ENG",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "d9ee5e86-9ea7-4857-a26d-ff9ca65c7514",
+              "name": "Trailer",
+              "value": "={{ $json.Trailer }}",
+              "type": "string"
+            },
+            {
+              "id": "4f93d667-181e-4032-b51b-2b6116fbda47",
+              "name": "Sinopsis CAT",
+              "value": "={{ $json[\"Sinopsis CAT\"].replaceAll('\\n',' ') }}",
+              "type": "string"
+            },
+            {
+              "id": "3310a137-8086-4ac1-aac6-938b86228633",
+              "name": "Sinopsis ENG",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "faf23e8d-8a7e-4784-bf48-ef8881544b72",
+              "name": "Imagen CAS",
+              "value": "Color",
+              "type": "string"
+            },
+            {
+              "id": "3db5a256-4371-44f8-b5b8-3b439ba3856f",
+              "name": "Idioma CAT",
+              "value": "={{ $json[\"Ficha Tecnica CAT\"][5].split(': ')[1] }}",
+              "type": "string"
+            },
+            {
+              "id": "35c8ee5c-f687-43f9-a603-30869226cf64",
+              "name": "Idioma ENG",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "16e07198-6431-41cc-90a6-d6567db8ddd5",
+              "name": "País CAT",
+              "value": "={{ $json[\"Ficha Tecnica CAT\"][4].split(': ')[1] }}",
+              "type": "string"
+            },
+            {
+              "id": "f91c77c4-efa4-46ef-864f-76702add1a4d",
+              "name": "País ENG",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "55ed54d7-3762-474e-aeac-20b18830746f",
+              "name": "Imagen CAT",
+              "value": "Color",
+              "type": "string"
+            },
+            {
+              "id": "8e5ed8ec-edca-486e-bd8a-42412276e4f8",
+              "name": "Imagen ENG",
+              "value": "Colour",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1560,
+        540
+      ],
+      "id": "0d56decd-762c-48ed-ae34-1669e04fd2d1",
+      "name": "Edit Fields17"
+    },
+    {
+      "parameters": {
+        "url": "=https://zumzeigcine.coop/es/{{ $json.Peliculas }}",
+        "options": {
+          "batching": {
+            "batch": {
+              "batchSize": 1
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        640,
+        560
+      ],
+      "id": "4380c7b5-c16d-49a8-afbf-c1be648f48e3",
+      "name": "Zumzeig Peliculas"
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "Titulo CAT",
+              "cssSelector": "h1"
+            },
+            {
+              "key": "Sinopsis CAT",
+              "cssSelector": "#content > div:nth-child(4) > div.rowcontent.col-md-6 > p"
+            },
+            {
+              "key": "Ficha Tecnica CAT",
+              "cssSelector": "#content > div:nth-child(7) > div.rowcontent.col-md-6 > p",
+              "returnArray": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        820,
+        400
+      ],
+      "id": "8aad9083-89e8-4ee8-8640-b93461c442b2",
+      "name": "HTML1"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        1260,
+        540
+      ],
+      "id": "c7fac200-ffe0-4ed0-b475-c5eb78246f90",
+      "name": "Merge7"
+    },
+    {
+      "parameters": {
+        "url": "=https://zumzeigcine.coop/{{ $json.Peliculas }}",
+        "options": {
+          "batching": {
+            "batch": {
+              "batchSize": 1
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        640,
+        400
+      ],
+      "id": "c1704afd-f473-4233-81f4-247614c75ab5",
+      "name": "Zumzeig Peliculas CAT"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "38e538af-7f7c-40f2-b813-eb8eedd39c66",
+              "name": "Idioma ENG",
+              "value": "={{ $json.text.split(';')[0].trim() }}",
+              "type": "string"
+            },
+            {
+              "id": "b73d5bfb-43dc-42ea-9dea-f7036718ee15",
+              "name": "País ENG",
+              "value": "={{ $json.text.split(';')[1].trim() }}",
+              "type": "string"
+            },
+            {
+              "id": "47f35658-2f5a-4203-8347-e4e4ae8b8e26",
+              "name": "Sinopsis ENG",
+              "value": "={{ $json.text.split(';')[2].trim() }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2160,
+        380
+      ],
+      "id": "1a7a9915-19d8-4d31-acac-5cbfe0de4c68",
+      "name": "Edit Fields18"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {
+          "clashHandling": {
+            "values": {
+              "resolveClash": "preferInput1"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        2420,
+        520
+      ],
+      "id": "89eb90a3-0d4a-4eeb-9758-7cc75b6f8c00",
+      "name": "Merge8"
+    },
+    {
+      "parameters": {
+        "amount": 60
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1880,
+        460
+      ],
+      "id": "da790d2f-a8d7-4af4-9a28-8ae987e9a8bd",
+      "name": "Wait3",
+      "webhookId": "e78b7a8c-7e45-425b-8c5f-13ad0c76d2bd"
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "sourceData": "binary",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "Peliculas",
+              "cssSelector": "div.peli-item>div.zitem>div.overlay>div.text>a",
+              "returnValue": "attribute",
+              "attribute": "href",
+              "returnArray": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        640,
+        200
+      ],
+      "id": "c7db4e72-73f0-4d53-83c7-646dbf049e9e",
+      "name": "HTML2"
+    },
+    {
+      "parameters": {
+        "command": "python3 mooby-request.py https://www.ocinemagic.es/es/"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        -20,
+        200
+      ],
+      "id": "eeb2a0e9-5c2b-456e-a70a-09cb7c643d44",
+      "name": "Selenium OcinePeliculas"
+    },
+    {
+      "parameters": {
+        "fileSelector": "/home/node/output.html",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        200,
+        200
+      ],
+      "id": "01383a85-be64-4a9d-96d5-89bd0c209955",
+      "name": "Read/Write Files from Disk1"
+    },
+    {
+      "parameters": {
+        "command": "python3 mooby-request.py https://www.ocinemagic.es/"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        1080,
+        200
+      ],
+      "id": "70fa7dc6-8872-4973-8f99-c72cd73d2509",
+      "name": "Selenium OcinePeliculas1"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "Peliculas",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        860,
+        200
+      ],
+      "id": "f252e55e-f8b1-4e54-abf0-da510866c8e9",
+      "name": "Split Out10"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Obtener los datos extraídos\nconst peliculas = items[0].json.Peliculas;\nconst bloquesPeliculas = items[0].json.BloquesPeliculas;\n\n// Mantener la estructura original que espera el Split Out\nlet resultado = {\n  Peliculas: [],\n  Fechas: []\n};\n\n// Función para procesar fechas en formato Zumzeig\nfunction procesarFechaZumzeig(fechaTexto) {\n  // Extraer la fecha y la hora\n  const diasMapping = {\n    'Dl': 'Lunes',\n    'Dt': 'Martes',\n    'Dc': 'Miércoles',\n    'Dj': 'Jueves',\n    'Dv': 'Viernes',\n    'Ds': 'Sábado',\n    'Dg': 'Domingo'\n  };\n  \n  // Extraer día de la semana y fecha numérica (ej: \"Dl 21.4.25\")\n  const regex = /([A-Za-z]+)\\s+(\\d+)\\.(\\d+)\\.(\\d+)/;\n  const match = fechaTexto.match(regex);\n  \n  if (match) {\n    const diaSemana = match[1];\n    const dia = match[2];\n    const mes = match[3];\n    const anyo = '20' + match[4]; // Convertir '25' a '2025'\n    \n    // Extraer hora si existe\n    const horaMatch = fechaTexto.match(/\\((\\d+:\\d+)\\)/);\n    const hora = horaMatch ? horaMatch[1] : '';\n    \n    // Construir fecha formateada\n    const diaCompleto = diasMapping[diaSemana] || diaSemana;\n    return `${diaCompleto} ${dia}/${mes}/${anyo} ${hora}`;\n  }\n  \n  // Si no coincide con el formato esperado, devolver el texto original\n  return fechaTexto;\n}\n\n// Procesar cada película con sus fechas\nfor (let i = 0; i < peliculas.length; i++) {\n  // Añadir la película al array de películas\n  resultado.Peliculas.push(peliculas[i]);\n  \n  // Usar regex para extraer todas las fechas del bloque HTML\n  const bloque = bloquesPeliculas[i];\n  const fechasMatch = bloque.match(/<div class=\"session\">((?!<strong class=\"plussesion\">).)*?<\\/div>/g);\n  \n  if (fechasMatch) {\n    // Extraer y limpiar cada fecha individual\n    fechasMatch.forEach(f => {\n      // Extraer el texto y limpiar\n      let fechaTexto = f.replace(/<[^>]*>/g, '').trim();\n      \n      // Procesar la fecha para convertirla al formato estándar\n      let fechaFormateada = procesarFechaZumzeig(fechaTexto);\n      \n      resultado.Fechas.push(fechaFormateada);\n    });\n  }\n}\n\nreturn [resultado]; // Devolver como array para que el Split Out funcione"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        200,
+        420
+      ],
+      "id": "2628926a-7840-4dd4-bf2f-bd2c0d86ee2d",
+      "name": "Code1"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "Peliculas",
+        "include": "allOtherFields",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        420,
+        480
+      ],
+      "id": "74053d0e-9743-4040-890d-1f135c95efd9",
+      "name": "Split Out4",
+      "alwaysOutputData": false
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Wait1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mooby Cinemas": {
+      "main": [
+        [
+          {
+            "node": "HTML Extract",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cinema Malda": {
+      "main": [
+        [
+          {
+            "node": "HTML Extract1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Phenomena Experience": {
+      "main": [
+        [
+          {
+            "node": "HTML Extract2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTML Extract": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Mooby Cinemas Peliculas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Merge4",
+            "type": "main",
+            "index": 1
+          },
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Sort",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTML Extract1": {
+      "main": [
+        [
+          {
+            "node": "Split Out1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out1": {
+      "main": [
+        [
+          {
+            "node": "Filtro href Peliculas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTML Extract2": {
+      "main": [
+        [
+          {
+            "node": "Split Out2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out2": {
+      "main": [
+        [
+          {
+            "node": "Filtro href peliculas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Merge5",
+            "type": "main",
+            "index": 1
+          },
+          {
+            "node": "Edit Fields15",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Cinema Malda",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Mooby Cinemas",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Phenomena Experience",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "HTTP Request Zumzeig",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "Merge6",
+            "type": "main",
+            "index": 1
+          },
+          {
+            "node": "Wait2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sort": {
+      "main": [
+        [
+          {
+            "node": "Aggregate1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mooby Cinemas Peliculas": {
+      "main": [
+        [
+          {
+            "node": "Extraer datos Mooby Cinemas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtro href Peliculas": {
+      "main": [
+        [
+          {
+            "node": "Cinema Malda Peliculas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtro href peliculas": {
+      "main": [
+        [
+          {
+            "node": "Phenomena Experience Peliculas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cinema Malda Peliculas": {
+      "main": [
+        [
+          {
+            "node": "Extraer datos Malda",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Phenomena Experience Peliculas": {
+      "main": [
+        [
+          {
+            "node": "Extraer datos Phenomena",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extraer datos Mooby Cinemas": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extraer datos Phenomena": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields5",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate1": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields3": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields5": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Convert to File": {
+      "main": [
+        [
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Sort1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields6": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Sort1": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge2": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields7": {
+      "main": [
+        [
+          {
+            "node": "Filter3",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Convert to File2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields8": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File1": {
+      "main": [
+        [
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Split Out3": {
+      "main": [
+        [
+          {
+            "node": "HTML Extract13",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTML Extract9": {
+      "main": [
+        [
+          {
+            "node": "Split Out3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Selenium Arenas",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Selenium Aribau",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Selenium Bosque",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Selenium Glories",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Selenium Sarria",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Selenium Balmes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTML Extract13": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields4": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge3": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Filter1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request3": {
+      "main": [
+        [
+          {
+            "node": "Filter2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter3": {
+      "main": [
+        [
+          {
+            "node": "Convert to File1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extraer datos Malda": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge4": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge5": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk": {
+      "main": [
+        [
+          {
+            "node": "HTML Extract9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields14",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out5": {
+      "main": [
+        [
+          {
+            "node": "HTML Extract15",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTML Extract11": {
+      "main": [
+        [
+          {
+            "node": "Split Out5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTML Extract15": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk2": {
+      "main": [
+        [
+          {
+            "node": "HTML Extract11",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out6": {
+      "main": [
+        [
+          {
+            "node": "HTML Extract16",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTML Extract12": {
+      "main": [
+        [
+          {
+            "node": "Split Out6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTML Extract16": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields10",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk3": {
+      "main": [
+        [
+          {
+            "node": "HTML Extract12",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out7": {
+      "main": [
+        [
+          {
+            "node": "HTML Extract18",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTML Extract17": {
+      "main": [
+        [
+          {
+            "node": "Split Out7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTML Extract18": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields11",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk4": {
+      "main": [
+        [
+          {
+            "node": "HTML Extract17",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out8": {
+      "main": [
+        [
+          {
+            "node": "HTML Extract20",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTML Extract19": {
+      "main": [
+        [
+          {
+            "node": "Split Out8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTML Extract20": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields12",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk5": {
+      "main": [
+        [
+          {
+            "node": "HTML Extract19",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out9": {
+      "main": [
+        [
+          {
+            "node": "HTML Extract22",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTML Extract21": {
+      "main": [
+        [
+          {
+            "node": "Split Out9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTML Extract22": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields13",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk6": {
+      "main": [
+        [
+          {
+            "node": "HTML Extract21",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Selenium Aribau": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Selenium Arenas": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Selenium Balmes": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Selenium Bosque": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Selenium Glories": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Selenium Sarria": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields13": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 7
+          }
+        ]
+      ]
+    },
+    "Edit Fields12": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 6
+          }
+        ]
+      ]
+    },
+    "Edit Fields11": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 5
+          }
+        ]
+      ]
+    },
+    "Edit Fields10": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 4
+          }
+        ]
+      ]
+    },
+    "Edit Fields9": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "Edit Fields15": {
+      "main": [
+        [
+          {
+            "node": "Merge5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields16": {
+      "main": [
+        [
+          {
+            "node": "Merge6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge6": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "Wait2": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields16",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Merge4",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait4": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request Zumzeig": {
+      "main": [
+        [
+          {
+            "node": "HTML Extract3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTML Extract3": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTML": {
+      "main": [
+        [
+          {
+            "node": "Merge7",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Zumzeig Peliculas": {
+      "main": [
+        [
+          {
+            "node": "HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge7": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields17",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTML1": {
+      "main": [
+        [
+          {
+            "node": "Merge7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Zumzeig Peliculas CAT": {
+      "main": [
+        [
+          {
+            "node": "HTML1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields18": {
+      "main": [
+        [
+          {
+            "node": "Merge8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait3": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields18",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields17": {
+      "main": [
+        [
+          {
+            "node": "Wait3",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge8",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge8": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Selenium OcinePeliculas": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk1": {
+      "main": [
+        [
+          {
+            "node": "HTML2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTML2": {
+      "main": [
+        [
+          {
+            "node": "Split Out10",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out10": {
+      "main": [
+        [
+          {
+            "node": "Selenium OcinePeliculas1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "Split Out4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out4": {
+      "main": [
+        [
+          {
+            "node": "Zumzeig Peliculas",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Zumzeig Peliculas CAT",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "fb2fbe58-16ed-4410-b68b-53f112b0ed9d",
+  "meta": {
+    "instanceId": "303e4cb016a65662dd6f090c618deea51b7977fd15c37980f25bf54cbb1bb486"
+  },
+  "id": "7T4ZYludzzyHDBtG",
+  "tags": []
+}
